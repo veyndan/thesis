@@ -1,4 +1,3 @@
-import org.apache.commons.math3.distribution.NormalDistribution
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.min
@@ -37,14 +36,7 @@ data class Race(val track: Track, private val competitors: List<Competitor>) {
 fun competitors(factorCount: Int, rangeBounds: ClosedFloatingPointRange<Double>) = generateSequence {
     Competitor(
         random.nextDoubleRange(rangeBounds),
-        List(factorCount) {
-            Competitor.Preference(
-                NormalDistribution(
-                    random.nextDouble(0.0, 1.0),
-                    random.nextDouble(0.0, 1.0)
-                ).sample().coerceIn(0.01..1.0)
-            )
-        }
+        List(factorCount) { Competitor.Preference(random.nextDouble(0.0, 1.0)) }
     )
 }
 
