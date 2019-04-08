@@ -1,7 +1,9 @@
+package com.veyndan.thesis
 
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.random.Random
+import kotlin.random.nextInt
 
 open class Bound(open val value: Double, private val range: ClosedFloatingPointRange<Double>) {
 
@@ -32,3 +34,5 @@ fun Random.nextDoubleRange(from: Double, until: Double): ClosedFloatingPointRang
     val b = nextDouble(from, until)
     return if (a < b) a..b else b..a
 }
+
+fun <T> List<T>.sample(n: IntRange) = shuffled().take(random.nextInt(n))

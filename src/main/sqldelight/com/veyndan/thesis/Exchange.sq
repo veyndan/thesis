@@ -1,0 +1,37 @@
+DROP TABLE IF EXISTS bet;
+
+CREATE TABLE IF NOT EXISTS bet (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    side TEXT NOT NULL,
+    operation TEXT NOT NULL,
+    trader INTEGER NOT NULL,
+    odds REAL NOT NULL
+);
+
+events:
+SELECT *
+FROM bet
+ORDER BY
+    id ASC;
+
+insert:
+INSERT INTO bet(side, operation, trader, odds)
+VALUES (?, ?, ?, ?);
+
+-- CREATE TABLE hockeyPlayer (
+--     player_number INTEGER NOT NULL,
+--     full_name TEXT NOT NULL
+-- );
+
+-- CREATE INDEX hockeyPlayer_full_name ON hockeyPlayer(full_name);
+--
+-- INSERT INTO hockeyPlayer (player_number, full_name)
+-- VALUES (15, 'Ryan Getzlaf');
+--
+-- selectAll:
+-- SELECT *
+-- FROM hockeyPlayer;
+--
+-- insert:
+-- INSERT INTO hockeyPlayer(player_number, full_name)
+-- VALUES (?, ?);
