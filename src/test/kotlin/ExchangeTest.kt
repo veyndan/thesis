@@ -184,7 +184,7 @@ class ExchangeTest {
     }
 
     @Test
-    fun marketOrderPartialMatchThenLimitOrderBack() {
+    fun marketOrderMatchBack() {
         val exchange = Exchange().apply {
             addOrder(Order.Lay(Trader(0), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
             addOrder(Order.Lay(Trader(0), Price(1.toBigDecimal()), Odds.Lay(1.9.toBigDecimal())))
@@ -203,6 +203,128 @@ class ExchangeTest {
                 ),
                 Odds.Lay(1.7.toBigDecimal()) to listOf(
                     Order.Lay(Trader(0), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal()))
+                )
+            ),
+            exchange.lays.toList()
+        )
+    }
+
+    @Test
+    fun recursiveMarketOrderMatchBack() {
+        val exchange = Exchange().apply {
+            addOrder(Order.Lay(Trader(0), Price(0.3.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
+            addOrder(Order.Lay(Trader(0), Price(0.5.toBigDecimal()), Odds.Lay(1.9.toBigDecimal())))
+            addOrder(Order.Lay(Trader(0), Price(3.2.toBigDecimal()), Odds.Lay(1.6.toBigDecimal())))
+            addOrder(Order.Back(Trader(0), Price(2.8.toBigDecimal()), Odds.Back(1.5.toBigDecimal())))
+        }
+
+        assertEquals(
+            emptyList<Pair<Odds.Lay, MutableList<Order.Lay>>>(),
+            exchange.backs.toList()
+        )
+
+        assertEquals(
+            listOf(
+                Odds.Lay(1.6.toBigDecimal()) to listOf(
+                    Order.Lay(Trader(0), Price(1.2.toBigDecimal()), Odds.Lay(1.6.toBigDecimal()))
+                )
+            ),
+            exchange.lays.toList()
+        )
+    }
+
+    @Test
+    fun recursiveMarketOrderPartialMatchBack() {
+        val exchange = Exchange().apply {
+            addOrder(Order.Lay(Trader(0), Price(0.3.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
+            addOrder(Order.Lay(Trader(0), Price(0.5.toBigDecimal()), Odds.Lay(1.9.toBigDecimal())))
+            addOrder(Order.Lay(Trader(0), Price(1.1.toBigDecimal()), Odds.Lay(1.6.toBigDecimal())))
+            addOrder(Order.Back(Trader(0), Price(2.8.toBigDecimal()), Odds.Back(1.5.toBigDecimal())))
+        }
+
+        assertEquals(
+            listOf(
+                Odds.Back(1.5.toBigDecimal()) to listOf(
+                    Order.Back(Trader(0), Price(0.9.toBigDecimal()), Odds.Back(1.5.toBigDecimal()))
+                )
+            ),
+            exchange.backs.toList()
+        )
+
+        assertEquals(
+            emptyList<Pair<Odds.Lay, MutableList<Order.Lay>>>(),
+            exchange.lays.toList()
+        )
+    }
+
+    @Test
+    fun marketOrderMatchLay() {
+        val exchange = Exchange().apply {
+            addOrder(Order.Back(Trader(0), Price(1.toBigDecimal()), Odds.Back(1.6.toBigDecimal())))
+            addOrder(Order.Back(Trader(0), Price(1.toBigDecimal()), Odds.Back(1.9.toBigDecimal())))
+            addOrder(Order.Lay(Trader(0), Price(0.6.toBigDecimal()), Odds.Lay(1.8.toBigDecimal())))
+        }
+
+        assertEquals(
+            listOf(
+                Odds.Back(1.6.toBigDecimal()) to listOf(
+                    Order.Back(Trader(0), Price(0.4.toBigDecimal()), Odds.Back(1.6.toBigDecimal()))
+                ),
+                Odds.Back(1.9.toBigDecimal()) to listOf(
+                    Order.Back(Trader(0), Price(1.toBigDecimal()), Odds.Back(1.9.toBigDecimal()))
+                )
+            ),
+            exchange.backs.toList()
+        )
+
+        assertEquals(
+            emptyList<Pair<Odds.Lay, MutableList<Order.Lay>>>(),
+            exchange.lays.toList()
+        )
+    }
+
+    @Test
+    fun recursiveMarketOrderMatchLay() {
+        val exchange = Exchange().apply {
+            addOrder(Order.Back(Trader(0), Price(0.3.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
+            addOrder(Order.Back(Trader(0), Price(3.2.toBigDecimal()), Odds.Back(1.9.toBigDecimal())))
+            addOrder(Order.Back(Trader(0), Price(0.5.toBigDecimal()), Odds.Back(1.6.toBigDecimal())))
+            addOrder(Order.Lay(Trader(0), Price(2.8.toBigDecimal()), Odds.Lay(2.toBigDecimal())))
+        }
+
+        assertEquals(
+            listOf(
+                Odds.Back(1.9.toBigDecimal()) to listOf(
+                    Order.Back(Trader(0), Price(1.2.toBigDecimal()), Odds.Back(1.9.toBigDecimal()))
+                )
+            ),
+            exchange.backs.toList()
+        )
+
+        assertEquals(
+            emptyList<Pair<Odds.Lay, MutableList<Order.Lay>>>(),
+            exchange.lays.toList()
+        )
+    }
+
+    @Test
+    fun recursiveMarketOrderPartialMatchLay() {
+        val exchange = Exchange().apply {
+            addOrder(Order.Back(Trader(0), Price(0.3.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
+            addOrder(Order.Back(Trader(0), Price(1.1.toBigDecimal()), Odds.Back(1.9.toBigDecimal())))
+            addOrder(Order.Back(Trader(0), Price(0.5.toBigDecimal()), Odds.Back(1.6.toBigDecimal())))
+            addOrder(Order.Lay(Trader(0), Price(2.8.toBigDecimal()), Odds.Lay(2.toBigDecimal())))
+        }
+
+        assertEquals(
+            emptyList<Pair<Odds.Back, MutableList<Order.Back>>>(),
+            exchange.backs.toList()
+        )
+
+        assertEquals(
+            listOf(
+                Odds.Lay(2.toBigDecimal()) to listOf(
+                    Order.Lay(Trader(0), Price(0.9.toBigDecimal()), Odds.Lay(2.toBigDecimal()))
                 )
             ),
             exchange.lays.toList()

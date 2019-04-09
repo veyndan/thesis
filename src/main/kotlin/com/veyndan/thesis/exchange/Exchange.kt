@@ -12,16 +12,17 @@ sealed class Odds {
 
     abstract val value: BigDecimal
 
-    data class Back(override val value: BigDecimal) : Odds(), Comparable<Back> {
+    fun matches(other: Odds) = when (this) {
+        is Odds.Back -> other is Odds.Lay && value <= other.value
+        is Odds.Lay -> other is Odds.Back && value >= other.value
+    }
 
-        fun matches(lay: Odds.Lay) = value <= lay.value
+    data class Back(override val value: BigDecimal) : Odds(), Comparable<Back> {
 
         override fun compareTo(other: Back): Int = value.compareTo(other.value)
     }
 
     data class Lay(override val value: BigDecimal) : Odds(), Comparable<Lay> {
-
-        fun matches(back: Odds.Back) = value >= back.value
 
         override fun compareTo(other: Lay): Int = other.value.compareTo(value)
     }
@@ -64,30 +65,69 @@ class Exchange {
     val lays = sortedMapOf<Odds.Lay, MutableList<Order.Lay>>()
 
     fun addOrder(order: Order) {
+//        fun match(order: Order) {
+//            val potentialMatch = when (order) {
+//                is Order.Back -> lays.values.firstOrNull()?.first() ?: Order.Lay.UNMATCHABLE
+//                is Order.Lay -> backs.values.firstOrNull()?.first() ?: Order.Back.UNMATCHABLE
+//            }
+//
+//            if (potentialMatch.odds.matches(order.odds)) { // Market order
+//                when {
+//                    order.price.value == potentialMatch.price.value -> lays.remove(potentialMatch.odds, potentialMatch)
+//                    order.price.value < potentialMatch.price.value -> lays.getValue(potentialMatch.odds)[0] =
+//                        potentialMatch.copy(price = Price(potentialMatch.price.value - order.price.value))
+//                    order.price.value > potentialMatch.price.value -> {
+//                        lays.remove(potentialMatch.odds, potentialMatch)
+//                        match(order.copy(price = Price(order.price.value - potentialMatch.price.value)))
+//                    }
+//                }
+//            } else { // Limit order
+//                backs[order.odds] = order
+//            }
+//        }
+
         when (order) {
             is Order.Back -> {
-                val bestLay = lays.values.firstOrNull()?.first() ?: Order.Lay.UNMATCHABLE
+                fun match(order: Order.Back) {
+                    val bestLay = lays.values.firstOrNull()?.first() ?: Order.Lay.UNMATCHABLE
 
-                if (bestLay.odds.matches(order.odds)) {
-                    if (order.price.value == bestLay.price.value) {
-                        lays.remove(bestLay.odds, bestLay)
-                    } else if (order.price.value < bestLay.price.value) {
-                        lays.getValue(bestLay.odds)[0] = bestLay.copy(price = Price(bestLay.price.value - order.price.value))
-                    } else {
-                        error("Don't know what to do")
+                    if (bestLay.odds.matches(order.odds)) { // Market order
+                        when {
+                            order.price.value == bestLay.price.value -> lays.remove(bestLay.odds, bestLay)
+                            order.price.value < bestLay.price.value -> lays.getValue(bestLay.odds)[0] =
+                                bestLay.copy(price = Price(bestLay.price.value - order.price.value))
+                            order.price.value > bestLay.price.value -> {
+                                lays.remove(bestLay.odds, bestLay)
+                                match(order.copy(price = Price(order.price.value - bestLay.price.value)))
+                            }
+                        }
+                    } else { // Limit order
+                        backs[order.odds] = order
                     }
-                } else {
-                    backs[order.odds] = order
                 }
+
+                match(order)
             }
             is Order.Lay -> {
-                val bestBack = backs.values.firstOrNull()?.first() ?: Order.Back.UNMATCHABLE
+                fun match(order: Order.Lay) {
+                    val bestBack = backs.values.firstOrNull()?.first() ?: Order.Back.UNMATCHABLE
 
-                if (bestBack.odds.matches(order.odds)) {
-                    backs.remove(bestBack.odds, bestBack)
-                } else {
-                    lays[order.odds] = order
+                    if (bestBack.odds.matches(order.odds)) { // Market order
+                        when {
+                            order.price.value == bestBack.price.value -> backs.remove(bestBack.odds, bestBack)
+                            order.price.value < bestBack.price.value -> backs.getValue(bestBack.odds)[0] =
+                                bestBack.copy(price = Price(bestBack.price.value - order.price.value))
+                            order.price.value > bestBack.price.value -> {
+                                backs.remove(bestBack.odds, bestBack)
+                                match(order.copy(price = Price(order.price.value - bestBack.price.value)))
+                            }
+                        }
+                    } else { // Limit order
+                        lays[order.odds] = order
+                    }
                 }
+
+                match(order)
             }
         }
     }
