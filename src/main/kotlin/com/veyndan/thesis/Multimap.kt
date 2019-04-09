@@ -12,3 +12,8 @@ fun <K, V> MutableMap<K, MutableList<V>>.remove(key: K, value: V) {
     getValue(key) -= value
     remove(key, mutableListOf())
 }
+
+fun <K, V> MutableMap<K, MutableList<V>>.replaceValues(key: K, values: MutableList<V>) {
+    remove(key)
+    put(key, values)
+}
