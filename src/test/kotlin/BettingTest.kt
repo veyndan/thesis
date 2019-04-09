@@ -3,11 +3,11 @@
 import com.veyndan.thesis.exchange.Bettor
 import com.veyndan.thesis.exchange.Exchange
 import com.veyndan.thesis.math.random
-import com.veyndan.thesis.pounds
 import com.veyndan.thesis.race.Competitor
 import com.veyndan.thesis.race.Distance
 import com.veyndan.thesis.race.Race
 import com.veyndan.thesis.race.Track
+import com.veyndan.thesis.toPounds
 import org.junit.jupiter.api.Test
 
 class BettingTest {
@@ -22,7 +22,7 @@ class BettingTest {
             )
         }
         val exchange = Exchange()
-        val bettor = Bettor(id = 0U, funds = 100.pounds)
+        val bettor = Bettor(id = 0U, funds = 100.toPounds())
 
         race.positions().forEachIndexed { tick, positions ->
             if (tick == 0) {

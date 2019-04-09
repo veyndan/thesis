@@ -4,11 +4,19 @@ package com.veyndan.thesis
 
 inline class Pennies(val value: ULong)
 
-val Int.pounds: Pennies
-    get() = toULong().pounds
+fun Int.toPennies(): Pennies = toULong().toPennies()
 
-val Long.pounds: Pennies
-    get() = toULong().pounds
+fun Long.toPennies(): Pennies = toULong().toPennies()
 
-val ULong.pounds: Pennies
-    get() = Pennies(this * 100U)
+fun ULong.toPennies(): Pennies = Pennies(this)
+
+fun Int.toPounds(): Pennies = toULong().toPounds()
+
+fun Long.toPounds(): Pennies = toULong().toPounds()
+
+fun ULong.toPounds(): Pennies = (this * 100U).toPennies()
+
+fun Double.toPounds(): Pennies {
+    require(toString().split(".").last().length <= 2) { "Exchange doesn't support fractional pennies: $this" }
+    return (this * 100).toLong().toPennies()
+}

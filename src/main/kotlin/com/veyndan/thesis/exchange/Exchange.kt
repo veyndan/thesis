@@ -2,9 +2,10 @@
 
 package com.veyndan.thesis.exchange
 
-import com.veyndan.thesis.pounds
 import com.veyndan.thesis.remove
 import com.veyndan.thesis.set
+import com.veyndan.thesis.toPennies
+import com.veyndan.thesis.toPounds
 
 class Exchange {
 
@@ -28,20 +29,20 @@ class Exchange {
                 order.price.value < potentialMatch.price.value -> {
                     when (order) {
                         is Order.Back -> lays.getValue((potentialMatch as Order.Lay).odds)[0] =
-                            potentialMatch.copy(price = Price(potentialMatch.price.value - order.price.value))
+                            potentialMatch.copy(price = (potentialMatch.price.value - order.price.value).toPennies())
                         is Order.Lay -> backs.getValue((potentialMatch as Order.Back).odds)[0] =
-                            potentialMatch.copy(price = Price(potentialMatch.price.value - order.price.value))
+                            potentialMatch.copy(price = (potentialMatch.price.value - order.price.value).toPennies())
                     }
                 }
                 order.price.value > potentialMatch.price.value -> {
                     when (order) {
                         is Order.Back -> {
                             lays.remove((potentialMatch as Order.Lay).odds, potentialMatch)
-                            addOrder(order.copy(price = Price(order.price.value - potentialMatch.price.value)))
+                            addOrder(order.copy(price = (order.price.value - potentialMatch.price.value).toPennies()))
                         }
                         is Order.Lay -> {
                             backs.remove((potentialMatch as Order.Back).odds, potentialMatch)
-                            addOrder(order.copy(price = Price(order.price.value - potentialMatch.price.value)))
+                            addOrder(order.copy(price = (order.price.value - potentialMatch.price.value).toPennies()))
                         }
                     }
                 }
@@ -66,6 +67,6 @@ class Exchange {
         /**
          * Allowable stake range in pennies.
          */
-        val BETTING_LIMIT = 2.pounds.value..ULong.MAX_VALUE
+        val BETTING_LIMIT = 2.toPounds().value..ULong.MAX_VALUE
     }
 }

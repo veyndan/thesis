@@ -24,7 +24,7 @@ fun main() {
         competitorsSample
     )
 
-    val bettors = Bettor.generate(5.pounds.value..10.pounds.value).take(10).toList()
+    val bettors = Bettor.generate(5.toPounds().value..10.toPounds().value).take(10).toList()
     val bettorsSample = bettors.sample(2..Int.MAX_VALUE)
 
     println("TRACK")
