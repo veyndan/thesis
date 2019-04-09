@@ -2,6 +2,7 @@
 
 package com.veyndan.thesis.exchange
 
+import com.veyndan.thesis.Pennies
 import java.math.BigDecimal
 
 sealed class Order {
@@ -19,7 +20,7 @@ sealed class Order {
         companion object {
 
             val UNMATCHABLE = Back(
-                Bettor(id = ULong.MAX_VALUE, funds = ULong.MAX_VALUE),
+                Bettor(id = ULong.MAX_VALUE, funds = Pennies(ULong.MAX_VALUE)),
                 Price(BigDecimal.ZERO),
                 Odds.Back(Double.MAX_VALUE.toBigDecimal())
             )
@@ -35,7 +36,7 @@ sealed class Order {
         companion object {
 
             val UNMATCHABLE = Lay(
-                Bettor(id = ULong.MAX_VALUE, funds = ULong.MAX_VALUE),
+                Bettor(id = ULong.MAX_VALUE, funds = Pennies(ULong.MAX_VALUE)),
                 Price(BigDecimal.ZERO),
                 Odds.Lay(Double.MIN_VALUE.toBigDecimal())
             )

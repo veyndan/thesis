@@ -3,6 +3,7 @@
 import com.veyndan.thesis.exchange.Bettor
 import com.veyndan.thesis.exchange.Exchange
 import com.veyndan.thesis.math.random
+import com.veyndan.thesis.pounds
 import com.veyndan.thesis.race.Competitor
 import com.veyndan.thesis.race.Distance
 import com.veyndan.thesis.race.Race
@@ -21,12 +22,14 @@ class BettingTest {
             )
         }
         val exchange = Exchange()
-        val bettor = Bettor(id = 0U, funds = 100UL)
+        val bettor = Bettor(id = 0U, funds = 100.pounds)
 
         race.positions().forEachIndexed { tick, positions ->
             if (tick == 0) {
                 println(positions)
             }
         }
+
+        assert(true)
     }
 }

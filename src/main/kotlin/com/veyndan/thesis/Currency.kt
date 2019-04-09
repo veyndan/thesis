@@ -2,11 +2,13 @@
 
 package com.veyndan.thesis
 
-val Int.pounds: ULong
+inline class Pennies(val value: ULong)
+
+val Int.pounds: Pennies
     get() = toULong().pounds
 
-val Long.pounds: ULong
+val Long.pounds: Pennies
     get() = toULong().pounds
 
-val ULong.pounds: ULong
-    get() = this * 100uL
+val ULong.pounds: Pennies
+    get() = Pennies(this * 100U)

@@ -66,6 +66,6 @@ class Exchange {
         /**
          * Allowable stake range in pennies.
          */
-        val BETTING_LIMIT = 2.pounds..ULong.MAX_VALUE
+        val BETTING_LIMIT = 2.pounds.value..ULong.MAX_VALUE
     }
 }
