@@ -1,6 +1,6 @@
 package com.veyndan.thesis.race
 
-import com.veyndan.thesis.Bound
+import com.veyndan.thesis.math.Bound
 
 data class Track(val length: Distance, val factors: List<Factor>) {
 

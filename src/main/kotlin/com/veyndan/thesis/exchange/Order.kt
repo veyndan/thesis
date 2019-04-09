@@ -6,12 +6,12 @@ import java.math.BigDecimal
 
 sealed class Order {
 
-    abstract val trader: Trader
+    abstract val trader: Bettor
     abstract val price: Price
     abstract val odds: Odds
 
     data class Back(
-        override val trader: Trader,
+        override val trader: Bettor,
         override val price: Price,
         override val odds: Odds.Back
     ) : Order() {
@@ -19,7 +19,7 @@ sealed class Order {
         companion object {
 
             val UNMATCHABLE = Back(
-                Trader(ULong.MAX_VALUE),
+                Bettor(id = ULong.MAX_VALUE, funds = ULong.MAX_VALUE),
                 Price(BigDecimal.ZERO),
                 Odds.Back(Double.MAX_VALUE.toBigDecimal())
             )
@@ -27,7 +27,7 @@ sealed class Order {
     }
 
     data class Lay(
-        override val trader: Trader,
+        override val trader: Bettor,
         override val price: Price,
         override val odds: Odds.Lay
     ) : Order() {
@@ -35,7 +35,7 @@ sealed class Order {
         companion object {
 
             val UNMATCHABLE = Lay(
-                Trader(ULong.MAX_VALUE),
+                Bettor(id = ULong.MAX_VALUE, funds = ULong.MAX_VALUE),
                 Price(BigDecimal.ZERO),
                 Odds.Lay(Double.MIN_VALUE.toBigDecimal())
             )

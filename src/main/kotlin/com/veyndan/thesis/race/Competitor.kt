@@ -1,16 +1,20 @@
 package com.veyndan.thesis.race
 
-import com.veyndan.thesis.Bound
-import com.veyndan.thesis.euclideanDistance
-import com.veyndan.thesis.nextDoubleRange
-import com.veyndan.thesis.random
+import com.veyndan.thesis.math.Bound
+import com.veyndan.thesis.math.euclideanDistance
+import com.veyndan.thesis.math.nextDoubleRange
+import com.veyndan.thesis.math.random
 import kotlin.math.abs
 
 data class Competitor(val variability: ClosedFloatingPointRange<Double>, val preferences: List<Preference>) {
 
     private fun body(): Double = random.nextDouble(variability.start, variability.endInclusive)
 
-    private fun compatibility(factors: List<Track.Factor>): Double = abs(1 - euclideanDistance(factors, preferences))
+    private fun compatibility(factors: List<Track.Factor>): Double = abs(1 - euclideanDistance(
+        factors,
+        preferences
+    )
+    )
 
     fun stepSize(factors: List<Track.Factor>): Double = body() * compatibility(factors)
 

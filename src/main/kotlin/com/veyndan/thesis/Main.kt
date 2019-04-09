@@ -3,6 +3,8 @@
 package com.veyndan.thesis
 
 import com.veyndan.thesis.exchange.Bettor
+import com.veyndan.thesis.math.random
+import com.veyndan.thesis.math.sample
 import com.veyndan.thesis.race.Competitor
 import com.veyndan.thesis.race.Distance
 import com.veyndan.thesis.race.Race

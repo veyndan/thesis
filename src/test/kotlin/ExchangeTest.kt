@@ -9,14 +9,14 @@ class ExchangeTest {
     @Test
     fun populate() {
         val exchange = Exchange().apply {
-            addOrder(Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
-            addOrder(Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
         }
 
         assertEquals(
             listOf(
                 Odds.Back(1.8.toBigDecimal()) to listOf(
-                    Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal()))
+                    Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal()))
                 )
             ),
             exchange.backs.toList()
@@ -24,7 +24,7 @@ class ExchangeTest {
         assertEquals(
             listOf(
                 Odds.Lay(1.7.toBigDecimal()) to listOf(
-                    Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal()))
+                    Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal()))
                 )
             ),
             exchange.lays.toList()
@@ -34,19 +34,19 @@ class ExchangeTest {
     @Test
     fun populateMultipleBackOrdersAtSameOdds() {
         val exchange = Exchange().apply {
-            addOrder(Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
-            addOrder(Order.Back(Trader(1U), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
-            addOrder(Order.Back(Trader(2U), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 1U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 2U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
         }
 
         assertEquals(
             listOf(
                 Odds.Back(1.7.toBigDecimal()) to listOf(
-                    Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal())),
-                    Order.Back(Trader(2U), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal()))
+                    Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal())),
+                    Order.Back(Bettor(id = 2U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal()))
                 ),
                 Odds.Back(1.8.toBigDecimal()) to listOf(
-                    Order.Back(Trader(1U), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal()))
+                    Order.Back(Bettor(id = 1U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal()))
                 )
             ),
             exchange.backs.toList()
@@ -56,19 +56,19 @@ class ExchangeTest {
     @Test
     fun populateMultipleLayOrdersAtSameOdds() {
         val exchange = Exchange().apply {
-            addOrder(Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
-            addOrder(Order.Lay(Trader(1U), Price(1.toBigDecimal()), Odds.Lay(1.8.toBigDecimal())))
-            addOrder(Order.Lay(Trader(2U), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 1U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.8.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 2U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
         }
 
         assertEquals(
             listOf(
                 Odds.Lay(1.8.toBigDecimal()) to listOf(
-                    Order.Lay(Trader(1U), Price(1.toBigDecimal()), Odds.Lay(1.8.toBigDecimal()))
+                    Order.Lay(Bettor(id = 1U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.8.toBigDecimal()))
                 ),
                 Odds.Lay(1.7.toBigDecimal()) to listOf(
-                    Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())),
-                    Order.Lay(Trader(2U), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal()))
+                    Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())),
+                    Order.Lay(Bettor(id = 2U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal()))
                 )
             ),
             exchange.lays.toList()
@@ -78,21 +78,21 @@ class ExchangeTest {
     @Test
     fun orderedBacksWhenPopulating() {
         val exchange = Exchange().apply {
-            addOrder(Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(2.2.toBigDecimal())))
-            addOrder(Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
-            addOrder(Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(2.2.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
         }
 
         assertEquals(
             listOf(
                 Odds.Back(1.7.toBigDecimal()) to listOf(
-                    Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal()))
+                    Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal()))
                 ),
                 Odds.Back(1.8.toBigDecimal()) to listOf(
-                    Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal()))
+                    Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal()))
                 ),
                 Odds.Back(2.2.toBigDecimal()) to listOf(
-                    Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(2.2.toBigDecimal()))
+                    Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(2.2.toBigDecimal()))
                 )
             ),
             exchange.backs.toList()
@@ -102,21 +102,21 @@ class ExchangeTest {
     @Test
     fun orderedLaysWhenPopulating() {
         val exchange = Exchange().apply {
-            addOrder(Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.8.toBigDecimal())))
-            addOrder(Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
-            addOrder(Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(2.2.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.8.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(2.2.toBigDecimal())))
         }
 
         assertEquals(
             listOf(
                 Odds.Lay(2.2.toBigDecimal()) to listOf(
-                    Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(2.2.toBigDecimal()))
+                    Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(2.2.toBigDecimal()))
                 ),
                 Odds.Lay(1.8.toBigDecimal()) to listOf(
-                    Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.8.toBigDecimal()))
+                    Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.8.toBigDecimal()))
                 ),
                 Odds.Lay(1.7.toBigDecimal()) to listOf(
-                    Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal()))
+                    Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal()))
                 )
             ),
             exchange.lays.toList()
@@ -126,16 +126,16 @@ class ExchangeTest {
     @Test
     fun deleteLoneBackOrder() {
         val exchange = Exchange().apply {
-            addOrder(Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
-            addOrder(Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
         }
 
-        exchange.deleteOrder(Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
+        exchange.deleteOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
 
         assertEquals(
             listOf(
                 Odds.Back(1.7.toBigDecimal()) to listOf(
-                    Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal()))
+                    Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal()))
                 )
             ),
             exchange.backs.toList()
@@ -145,9 +145,9 @@ class ExchangeTest {
     @Test
     fun marketOrderSamePricedBack() {
         val exchange = Exchange().apply {
-            addOrder(Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
-            addOrder(Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.9.toBigDecimal())))
-            addOrder(Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.9.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
         }
 
         assertEquals(
@@ -158,7 +158,7 @@ class ExchangeTest {
         assertEquals(
             listOf(
                 Odds.Lay(1.7.toBigDecimal()) to listOf(
-                    Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal()))
+                    Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal()))
                 )
             ),
             exchange.lays.toList()
@@ -168,15 +168,15 @@ class ExchangeTest {
     @Test
     fun marketOrderSamePricedLay() {
         val exchange = Exchange().apply {
-            addOrder(Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
-            addOrder(Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.9.toBigDecimal())))
-            addOrder(Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.8.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.9.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.8.toBigDecimal())))
         }
 
         assertEquals(
             listOf(
                 Odds.Back(1.9.toBigDecimal()) to listOf(
-                    Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.9.toBigDecimal()))
+                    Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.9.toBigDecimal()))
                 )
             ),
             exchange.backs.toList()
@@ -188,9 +188,9 @@ class ExchangeTest {
     @Test
     fun marketOrderMatchBack() {
         val exchange = Exchange().apply {
-            addOrder(Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
-            addOrder(Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.9.toBigDecimal())))
-            addOrder(Order.Back(Trader(0U), Price(0.6.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.9.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.6.toBigDecimal()), Odds.Back(1.8.toBigDecimal())))
         }
 
         assertEquals(
@@ -201,10 +201,10 @@ class ExchangeTest {
         assertEquals(
             listOf(
                 Odds.Lay(1.9.toBigDecimal()) to listOf(
-                    Order.Lay(Trader(0U), Price(0.4.toBigDecimal()), Odds.Lay(1.9.toBigDecimal()))
+                    Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.4.toBigDecimal()), Odds.Lay(1.9.toBigDecimal()))
                 ),
                 Odds.Lay(1.7.toBigDecimal()) to listOf(
-                    Order.Lay(Trader(0U), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal()))
+                    Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Lay(1.7.toBigDecimal()))
                 )
             ),
             exchange.lays.toList()
@@ -214,10 +214,10 @@ class ExchangeTest {
     @Test
     fun recursiveMarketOrderMatchBack() {
         val exchange = Exchange().apply {
-            addOrder(Order.Lay(Trader(0U), Price(0.3.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
-            addOrder(Order.Lay(Trader(0U), Price(0.5.toBigDecimal()), Odds.Lay(1.9.toBigDecimal())))
-            addOrder(Order.Lay(Trader(0U), Price(3.2.toBigDecimal()), Odds.Lay(1.6.toBigDecimal())))
-            addOrder(Order.Back(Trader(0U), Price(2.8.toBigDecimal()), Odds.Back(1.5.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.3.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.5.toBigDecimal()), Odds.Lay(1.9.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(3.2.toBigDecimal()), Odds.Lay(1.6.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(2.8.toBigDecimal()), Odds.Back(1.5.toBigDecimal())))
         }
 
         assertEquals(
@@ -228,7 +228,7 @@ class ExchangeTest {
         assertEquals(
             listOf(
                 Odds.Lay(1.6.toBigDecimal()) to listOf(
-                    Order.Lay(Trader(0U), Price(1.2.toBigDecimal()), Odds.Lay(1.6.toBigDecimal()))
+                    Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.2.toBigDecimal()), Odds.Lay(1.6.toBigDecimal()))
                 )
             ),
             exchange.lays.toList()
@@ -238,16 +238,16 @@ class ExchangeTest {
     @Test
     fun recursiveMarketOrderPartialMatchBack() {
         val exchange = Exchange().apply {
-            addOrder(Order.Lay(Trader(0U), Price(0.3.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
-            addOrder(Order.Lay(Trader(0U), Price(0.5.toBigDecimal()), Odds.Lay(1.9.toBigDecimal())))
-            addOrder(Order.Lay(Trader(0U), Price(1.1.toBigDecimal()), Odds.Lay(1.6.toBigDecimal())))
-            addOrder(Order.Back(Trader(0U), Price(2.8.toBigDecimal()), Odds.Back(1.5.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.3.toBigDecimal()), Odds.Lay(1.7.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.5.toBigDecimal()), Odds.Lay(1.9.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.1.toBigDecimal()), Odds.Lay(1.6.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(2.8.toBigDecimal()), Odds.Back(1.5.toBigDecimal())))
         }
 
         assertEquals(
             listOf(
                 Odds.Back(1.5.toBigDecimal()) to listOf(
-                    Order.Back(Trader(0U), Price(0.9.toBigDecimal()), Odds.Back(1.5.toBigDecimal()))
+                    Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.9.toBigDecimal()), Odds.Back(1.5.toBigDecimal()))
                 )
             ),
             exchange.backs.toList()
@@ -262,18 +262,18 @@ class ExchangeTest {
     @Test
     fun marketOrderMatchLay() {
         val exchange = Exchange().apply {
-            addOrder(Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.6.toBigDecimal())))
-            addOrder(Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.9.toBigDecimal())))
-            addOrder(Order.Lay(Trader(0U), Price(0.6.toBigDecimal()), Odds.Lay(1.8.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.6.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.9.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.6.toBigDecimal()), Odds.Lay(1.8.toBigDecimal())))
         }
 
         assertEquals(
             listOf(
                 Odds.Back(1.6.toBigDecimal()) to listOf(
-                    Order.Back(Trader(0U), Price(0.4.toBigDecimal()), Odds.Back(1.6.toBigDecimal()))
+                    Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.4.toBigDecimal()), Odds.Back(1.6.toBigDecimal()))
                 ),
                 Odds.Back(1.9.toBigDecimal()) to listOf(
-                    Order.Back(Trader(0U), Price(1.toBigDecimal()), Odds.Back(1.9.toBigDecimal()))
+                    Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.toBigDecimal()), Odds.Back(1.9.toBigDecimal()))
                 )
             ),
             exchange.backs.toList()
@@ -288,16 +288,16 @@ class ExchangeTest {
     @Test
     fun recursiveMarketOrderMatchLay() {
         val exchange = Exchange().apply {
-            addOrder(Order.Back(Trader(0U), Price(0.3.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
-            addOrder(Order.Back(Trader(0U), Price(3.2.toBigDecimal()), Odds.Back(1.9.toBigDecimal())))
-            addOrder(Order.Back(Trader(0U), Price(0.5.toBigDecimal()), Odds.Back(1.6.toBigDecimal())))
-            addOrder(Order.Lay(Trader(0U), Price(2.8.toBigDecimal()), Odds.Lay(2.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.3.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(3.2.toBigDecimal()), Odds.Back(1.9.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.5.toBigDecimal()), Odds.Back(1.6.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(2.8.toBigDecimal()), Odds.Lay(2.toBigDecimal())))
         }
 
         assertEquals(
             listOf(
                 Odds.Back(1.9.toBigDecimal()) to listOf(
-                    Order.Back(Trader(0U), Price(1.2.toBigDecimal()), Odds.Back(1.9.toBigDecimal()))
+                    Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.2.toBigDecimal()), Odds.Back(1.9.toBigDecimal()))
                 )
             ),
             exchange.backs.toList()
@@ -312,10 +312,10 @@ class ExchangeTest {
     @Test
     fun recursiveMarketOrderPartialMatchLay() {
         val exchange = Exchange().apply {
-            addOrder(Order.Back(Trader(0U), Price(0.3.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
-            addOrder(Order.Back(Trader(0U), Price(1.1.toBigDecimal()), Odds.Back(1.9.toBigDecimal())))
-            addOrder(Order.Back(Trader(0U), Price(0.5.toBigDecimal()), Odds.Back(1.6.toBigDecimal())))
-            addOrder(Order.Lay(Trader(0U), Price(2.8.toBigDecimal()), Odds.Lay(2.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.3.toBigDecimal()), Odds.Back(1.7.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(1.1.toBigDecimal()), Odds.Back(1.9.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.5.toBigDecimal()), Odds.Back(1.6.toBigDecimal())))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(2.8.toBigDecimal()), Odds.Lay(2.toBigDecimal())))
         }
 
         assertEquals(
@@ -326,7 +326,7 @@ class ExchangeTest {
         assertEquals(
             listOf(
                 Odds.Lay(2.toBigDecimal()) to listOf(
-                    Order.Lay(Trader(0U), Price(0.9.toBigDecimal()), Odds.Lay(2.toBigDecimal()))
+                    Order.Lay(Bettor(id = 0U, funds = ULong.MAX_VALUE), Price(0.9.toBigDecimal()), Odds.Lay(2.toBigDecimal()))
                 )
             ),
             exchange.lays.toList()
