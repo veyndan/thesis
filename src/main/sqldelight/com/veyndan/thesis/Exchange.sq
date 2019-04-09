@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS bet (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     side TEXT NOT NULL,
     operation TEXT NOT NULL,
-    trader INTEGER NOT NULL CHECK (trader >= 0),
+    bettor INTEGER NOT NULL CHECK (bettor >= 0),
     odds REAL AS BigDecimal NOT NULL
 );
 
@@ -17,5 +17,5 @@ ORDER BY
     id ASC;
 
 insert:
-INSERT INTO bet(side, operation, trader, odds)
+INSERT INTO bet(side, operation, bettor, odds)
 VALUES (?, ?, ?, ?);

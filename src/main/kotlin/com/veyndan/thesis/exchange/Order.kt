@@ -7,13 +7,13 @@ import com.veyndan.thesis.toPennies
 
 sealed class Order {
 
-    abstract val trader: Bettor
-    abstract val price: Pennies
+    abstract val bettor: Bettor
+    abstract val stake: Pennies
     abstract val odds: Odds
 
     data class Back(
-        override val trader: Bettor,
-        override val price: Pennies,
+        override val bettor: Bettor,
+        override val stake: Pennies,
         override val odds: Odds.Back
     ) : Order() {
 
@@ -28,8 +28,8 @@ sealed class Order {
     }
 
     data class Lay(
-        override val trader: Bettor,
-        override val price: Pennies,
+        override val bettor: Bettor,
+        override val stake: Pennies,
         override val odds: Odds.Lay
     ) : Order() {
 
