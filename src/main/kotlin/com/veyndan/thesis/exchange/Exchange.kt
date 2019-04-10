@@ -9,8 +9,8 @@ import com.veyndan.thesis.toPounds
 
 class Exchange {
 
-    val backs = sortedMapOf<Odds.Back, MutableList<Order.Back>>()
-    val lays = sortedMapOf<Odds.Lay, MutableList<Order.Lay>>()
+    val backs = mapOf<Odds, MutableList<Order.Back>>().toSortedMap(Odds.COMPARATOR_BACK)
+    val lays = mapOf<Odds, MutableList<Order.Lay>>().toSortedMap(Odds.COMPARATOR_LAY)
 
     fun addOrder(order: Order) {
         val potentialMatch = when (order) {
@@ -18,7 +18,7 @@ class Exchange {
             is Order.Lay -> backs.values.firstOrNull()?.first() ?: Order.Back.UNMATCHABLE
         }
 
-        if (potentialMatch.odds.matches(order.odds)) { // Market order
+        if (potentialMatch.matches(order)) { // Market order
             when {
                 order.stake.value == potentialMatch.stake.value -> {
                     when (order) {
@@ -52,7 +52,7 @@ class Exchange {
         } else { // Limit order
             when (order) {
                 is Order.Back -> backs[order.odds] = order
-                  // Test against this: https://www.betfair.com.au/hub/betfair-betting-simulator/
+                // Test against this: https://www.betfair.com.au/hub/betfair-betting-simulator/
 //                TODO is Order.Back -> backs[order.odds] = order.copy(bettor = order.bettor.copy(funds = (order.bettor.funds.value - order.stake.value).toPennies()))
                 is Order.Lay -> lays[order.odds] = order
 //                TODO is Order.Lay -> lays[order.odds] = order.copy(bettor = order.bettor.copy(funds = (order.bettor.funds.value - (order.stake.value * (order.odds.value - BigDecimal.ONE))).toPennies()))

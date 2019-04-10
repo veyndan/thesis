@@ -1,9 +1,6 @@
 @file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 
-import com.veyndan.thesis.exchange.Bettor
-import com.veyndan.thesis.exchange.Exchange
-import com.veyndan.thesis.exchange.Odds
-import com.veyndan.thesis.exchange.Order
+import com.veyndan.thesis.exchange.*
 import com.veyndan.thesis.toPounds
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -13,17 +10,17 @@ class ExchangeTest {
     @Test
     fun populate() {
         val exchange = Exchange().apply {
-            addOrder(Order.Back(Bettor(id = 0U, funds = 10.toPounds()), 1.toPounds(), Odds.Back(1.8.toBigDecimal())))
-            addOrder(Order.Lay(Bettor(id = 0U, funds = 10.toPounds()), 1.toPounds(), Odds.Lay(1.7.toBigDecimal())))
+            addOrder(Order.Back(Bettor(id = 0U, funds = 10.toPounds()), 1.toPounds(), 1.8.toOdds()))
+            addOrder(Order.Lay(Bettor(id = 0U, funds = 10.toPounds()), 1.toPounds(), 1.7.toOdds()))
         }
 
         assertEquals(
             listOf(
-                Odds.Back(1.8.toBigDecimal()) to listOf(
+                1.8.toOdds() to listOf(
                     Order.Back(
                         Bettor(id = 0U, funds = 9.toPounds()),
                         1.toPounds(),
-                        Odds.Back(1.8.toBigDecimal())
+                        1.8.toOdds()
                     )
                 )
             ),
@@ -31,11 +28,11 @@ class ExchangeTest {
         )
         assertEquals(
             listOf(
-                Odds.Lay(1.7.toBigDecimal()) to listOf(
+                1.7.toOdds() to listOf(
                     Order.Lay(
                         Bettor(id = 0U, funds = 9.toPounds()),
                         1.toPounds(),
-                        Odds.Lay(1.7.toBigDecimal())
+                        1.7.toOdds()
                     )
                 )
             ),
@@ -50,44 +47,44 @@ class ExchangeTest {
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Back(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 1U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Back(1.8.toBigDecimal())
+                    1.8.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 2U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Back(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
         }
 
         assertEquals(
             listOf(
-                Odds.Back(1.7.toBigDecimal()) to listOf(
+                1.7.toOdds() to listOf(
                     Order.Back(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Back(1.7.toBigDecimal())
+                        1.7.toOdds()
                     ),
                     Order.Back(
                         Bettor(id = 2U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Back(1.7.toBigDecimal())
+                        1.7.toOdds()
                     )
                 ),
-                Odds.Back(1.8.toBigDecimal()) to listOf(
+                1.8.toOdds() to listOf(
                     Order.Back(
                         Bettor(id = 1U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Back(1.8.toBigDecimal())
+                        1.8.toOdds()
                     )
                 )
             ),
@@ -102,44 +99,44 @@ class ExchangeTest {
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Lay(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 1U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Lay(1.8.toBigDecimal())
+                    1.8.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 2U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Lay(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
         }
 
         assertEquals(
             listOf(
-                Odds.Lay(1.8.toBigDecimal()) to listOf(
+                1.8.toOdds() to listOf(
                     Order.Lay(
                         Bettor(id = 1U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Lay(1.8.toBigDecimal())
+                        1.8.toOdds()
                     )
                 ),
-                Odds.Lay(1.7.toBigDecimal()) to listOf(
+                1.7.toOdds() to listOf(
                     Order.Lay(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Lay(1.7.toBigDecimal())
+                        1.7.toOdds()
                     ),
                     Order.Lay(
                         Bettor(id = 2U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Lay(1.7.toBigDecimal())
+                        1.7.toOdds()
                     )
                 )
             ),
@@ -154,46 +151,46 @@ class ExchangeTest {
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Back(2.2.toBigDecimal())
+                    2.2.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Back(1.8.toBigDecimal())
+                    1.8.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Back(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
         }
 
         assertEquals(
             listOf(
-                Odds.Back(1.7.toBigDecimal()) to listOf(
+                1.7.toOdds() to listOf(
                     Order.Back(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Back(1.7.toBigDecimal())
+                        1.7.toOdds()
                     )
                 ),
-                Odds.Back(1.8.toBigDecimal()) to listOf(
+                1.8.toOdds() to listOf(
                     Order.Back(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Back(1.8.toBigDecimal())
+                        1.8.toOdds()
                     )
                 ),
-                Odds.Back(2.2.toBigDecimal()) to listOf(
+                2.2.toOdds() to listOf(
                     Order.Back(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Back(2.2.toBigDecimal())
+                        2.2.toOdds()
                     )
                 )
             ),
@@ -208,46 +205,46 @@ class ExchangeTest {
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Lay(1.8.toBigDecimal())
+                    1.8.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Lay(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Lay(2.2.toBigDecimal())
+                    2.2.toOdds()
                 )
             )
         }
 
         assertEquals(
             listOf(
-                Odds.Lay(2.2.toBigDecimal()) to listOf(
+                2.2.toOdds() to listOf(
                     Order.Lay(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Lay(2.2.toBigDecimal())
+                        2.2.toOdds()
                     )
                 ),
-                Odds.Lay(1.8.toBigDecimal()) to listOf(
+                1.8.toOdds() to listOf(
                     Order.Lay(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Lay(1.8.toBigDecimal())
+                        1.8.toOdds()
                     )
                 ),
-                Odds.Lay(1.7.toBigDecimal()) to listOf(
+                1.7.toOdds() to listOf(
                     Order.Lay(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Lay(1.7.toBigDecimal())
+                        1.7.toOdds()
                     )
                 )
             ),
@@ -262,14 +259,14 @@ class ExchangeTest {
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Back(1.8.toBigDecimal())
+                    1.8.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Back(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
         }
@@ -278,17 +275,17 @@ class ExchangeTest {
             Order.Back(
                 Bettor(id = 0U, funds = 10.toPounds()),
                 1.toPounds(),
-                Odds.Back(1.8.toBigDecimal())
+                1.8.toOdds()
             )
         )
 
         assertEquals(
             listOf(
-                Odds.Back(1.7.toBigDecimal()) to listOf(
+                1.7.toOdds() to listOf(
                     Order.Back(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Back(1.7.toBigDecimal())
+                        1.7.toOdds()
                     )
                 )
             ),
@@ -303,37 +300,37 @@ class ExchangeTest {
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Lay(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Lay(1.9.toBigDecimal())
+                    1.9.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Back(1.8.toBigDecimal())
+                    1.8.toOdds()
                 )
             )
         }
 
         assertEquals(
-            emptyList<Pair<Odds.Lay, MutableList<Order.Lay>>>(),
+            emptyList<Pair<Odds, MutableList<Order.Lay>>>(),
             exchange.backs.toList()
         )
 
         assertEquals(
             listOf(
-                Odds.Lay(1.7.toBigDecimal()) to listOf(
+                1.7.toOdds() to listOf(
                     Order.Lay(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Lay(1.7.toBigDecimal())
+                        1.7.toOdds()
                     )
                 )
             ),
@@ -348,39 +345,39 @@ class ExchangeTest {
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Back(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Back(1.9.toBigDecimal())
+                    1.9.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Lay(1.8.toBigDecimal())
+                    1.8.toOdds()
                 )
             )
         }
 
         assertEquals(
             listOf(
-                Odds.Back(1.9.toBigDecimal()) to listOf(
+                1.9.toOdds() to listOf(
                     Order.Back(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Back(1.9.toBigDecimal())
+                        1.9.toOdds()
                     )
                 )
             ),
             exchange.backs.toList()
         )
 
-        assertEquals(emptyList<Pair<Odds.Lay, MutableList<Order.Lay>>>(), exchange.lays.toList())
+        assertEquals(emptyList<Pair<Odds, MutableList<Order.Lay>>>(), exchange.lays.toList())
     }
 
     @Test
@@ -390,44 +387,44 @@ class ExchangeTest {
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Lay(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Lay(1.9.toBigDecimal())
+                    1.9.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     0.6.toPounds(),
-                    Odds.Back(1.8.toBigDecimal())
+                    1.8.toOdds()
                 )
             )
         }
 
         assertEquals(
-            emptyList<Pair<Odds.Lay, MutableList<Order.Lay>>>(),
+            emptyList<Pair<Odds, MutableList<Order.Lay>>>(),
             exchange.backs.toList()
         )
 
         assertEquals(
             listOf(
-                Odds.Lay(1.9.toBigDecimal()) to listOf(
+                1.9.toOdds() to listOf(
                     Order.Lay(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         0.4.toPounds(),
-                        Odds.Lay(1.9.toBigDecimal())
+                        1.9.toOdds()
                     )
                 ),
-                Odds.Lay(1.7.toBigDecimal()) to listOf(
+                1.7.toOdds() to listOf(
                     Order.Lay(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Lay(1.7.toBigDecimal())
+                        1.7.toOdds()
                     )
                 )
             ),
@@ -442,44 +439,44 @@ class ExchangeTest {
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     0.3.toPounds(),
-                    Odds.Lay(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     0.5.toPounds(),
-                    Odds.Lay(1.9.toBigDecimal())
+                    1.9.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     3.2.toPounds(),
-                    Odds.Lay(1.6.toBigDecimal())
+                    1.6.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     2.8.toPounds(),
-                    Odds.Back(1.5.toBigDecimal())
+                    1.5.toOdds()
                 )
             )
         }
 
         assertEquals(
-            emptyList<Pair<Odds.Lay, MutableList<Order.Lay>>>(),
+            emptyList<Pair<Odds, MutableList<Order.Lay>>>(),
             exchange.backs.toList()
         )
 
         assertEquals(
             listOf(
-                Odds.Lay(1.6.toBigDecimal()) to listOf(
+                1.6.toOdds() to listOf(
                     Order.Lay(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.2.toPounds(),
-                        Odds.Lay(1.6.toBigDecimal())
+                        1.6.toOdds()
                     )
                 )
             ),
@@ -494,39 +491,39 @@ class ExchangeTest {
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     0.3.toPounds(),
-                    Odds.Lay(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     0.5.toPounds(),
-                    Odds.Lay(1.9.toBigDecimal())
+                    1.9.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.1.toPounds(),
-                    Odds.Lay(1.6.toBigDecimal())
+                    1.6.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     2.8.toPounds(),
-                    Odds.Back(1.5.toBigDecimal())
+                    1.5.toOdds()
                 )
             )
         }
 
         assertEquals(
             listOf(
-                Odds.Back(1.5.toBigDecimal()) to listOf(
+                1.5.toOdds() to listOf(
                     Order.Back(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         0.9.toPounds(),
-                        Odds.Back(1.5.toBigDecimal())
+                        1.5.toOdds()
                     )
                 )
             ),
@@ -534,7 +531,7 @@ class ExchangeTest {
         )
 
         assertEquals(
-            emptyList<Pair<Odds.Lay, MutableList<Order.Lay>>>(),
+            emptyList<Pair<Odds, MutableList<Order.Lay>>>(),
             exchange.lays.toList()
         )
     }
@@ -546,39 +543,39 @@ class ExchangeTest {
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Back(1.6.toBigDecimal())
+                    1.6.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.toPounds(),
-                    Odds.Back(1.9.toBigDecimal())
+                    1.9.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     0.6.toPounds(),
-                    Odds.Lay(1.8.toBigDecimal())
+                    1.8.toOdds()
                 )
             )
         }
 
         assertEquals(
             listOf(
-                Odds.Back(1.6.toBigDecimal()) to listOf(
+                1.6.toOdds() to listOf(
                     Order.Back(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         0.4.toPounds(),
-                        Odds.Back(1.6.toBigDecimal())
+                        1.6.toOdds()
                     )
                 ),
-                Odds.Back(1.9.toBigDecimal()) to listOf(
+                1.9.toOdds() to listOf(
                     Order.Back(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.toPounds(),
-                        Odds.Back(1.9.toBigDecimal())
+                        1.9.toOdds()
                     )
                 )
             ),
@@ -586,7 +583,7 @@ class ExchangeTest {
         )
 
         assertEquals(
-            emptyList<Pair<Odds.Lay, MutableList<Order.Lay>>>(),
+            emptyList<Pair<Odds, MutableList<Order.Lay>>>(),
             exchange.lays.toList()
         )
     }
@@ -598,39 +595,39 @@ class ExchangeTest {
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     0.3.toPounds(),
-                    Odds.Back(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     3.2.toPounds(),
-                    Odds.Back(1.9.toBigDecimal())
+                    1.9.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     0.5.toPounds(),
-                    Odds.Back(1.6.toBigDecimal())
+                    1.6.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     2.8.toPounds(),
-                    Odds.Lay(2.toBigDecimal())
+                    2.toOdds()
                 )
             )
         }
 
         assertEquals(
             listOf(
-                Odds.Back(1.9.toBigDecimal()) to listOf(
+                1.9.toOdds() to listOf(
                     Order.Back(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         1.2.toPounds(),
-                        Odds.Back(1.9.toBigDecimal())
+                        1.9.toOdds()
                     )
                 )
             ),
@@ -638,7 +635,7 @@ class ExchangeTest {
         )
 
         assertEquals(
-            emptyList<Pair<Odds.Lay, MutableList<Order.Lay>>>(),
+            emptyList<Pair<Odds, MutableList<Order.Lay>>>(),
             exchange.lays.toList()
         )
     }
@@ -650,44 +647,44 @@ class ExchangeTest {
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     0.3.toPounds(),
-                    Odds.Back(1.7.toBigDecimal())
+                    1.7.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     1.1.toPounds(),
-                    Odds.Back(1.9.toBigDecimal())
+                    1.9.toOdds()
                 )
             )
             addOrder(
                 Order.Back(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     0.5.toPounds(),
-                    Odds.Back(1.6.toBigDecimal())
+                    1.6.toOdds()
                 )
             )
             addOrder(
                 Order.Lay(
                     Bettor(id = 0U, funds = 10.toPounds()),
                     2.8.toPounds(),
-                    Odds.Lay(2.toBigDecimal())
+                    2.toOdds()
                 )
             )
         }
 
         assertEquals(
-            emptyList<Pair<Odds.Back, MutableList<Order.Back>>>(),
+            emptyList<Pair<Odds, MutableList<Order.Back>>>(),
             exchange.backs.toList()
         )
 
         assertEquals(
             listOf(
-                Odds.Lay(2.toBigDecimal()) to listOf(
+                2.toOdds() to listOf(
                     Order.Lay(
                         Bettor(id = 0U, funds = 10.toPounds()),
                         0.9.toPounds(),
-                        Odds.Lay(2.toBigDecimal())
+                        2.toOdds()
                     )
                 )
             ),

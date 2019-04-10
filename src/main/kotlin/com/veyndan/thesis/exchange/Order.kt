@@ -11,10 +11,15 @@ sealed class Order {
     abstract val stake: Pennies
     abstract val odds: Odds
 
+    fun matches(other: Order) = when (this) {
+        is Order.Back -> other is Order.Lay && odds.value <= other.odds.value
+        is Order.Lay -> other is Order.Back && odds.value >= other.odds.value
+    }
+
     data class Back(
         override val bettor: Bettor,
         override val stake: Pennies,
-        override val odds: Odds.Back
+        override val odds: Odds
     ) : Order() {
 
         companion object {
@@ -22,7 +27,7 @@ sealed class Order {
             val UNMATCHABLE = Back(
                 Bettor(id = ULong.MAX_VALUE, funds = ULong.MAX_VALUE.toPennies()),
                 0.toPennies(),
-                Odds.Back(Double.MAX_VALUE.toBigDecimal())
+                Odds(ULong.MAX_VALUE)
             )
         }
     }
@@ -30,7 +35,7 @@ sealed class Order {
     data class Lay(
         override val bettor: Bettor,
         override val stake: Pennies,
-        override val odds: Odds.Lay
+        override val odds: Odds
     ) : Order() {
 
         companion object {
@@ -38,7 +43,7 @@ sealed class Order {
             val UNMATCHABLE = Lay(
                 Bettor(id = ULong.MAX_VALUE, funds = ULong.MAX_VALUE.toPennies()),
                 0.toPennies(),
-                Odds.Lay(Double.MIN_VALUE.toBigDecimal())
+                Odds(ULong.MIN_VALUE)
             )
         }
     }

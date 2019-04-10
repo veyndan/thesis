@@ -17,6 +17,6 @@ fun Long.toPounds(): Pennies = toULong().toPounds()
 fun ULong.toPounds(): Pennies = (this * 100U).toPennies()
 
 fun Double.toPounds(): Pennies {
-    require(toString().split(".").last().length <= 2) { "Exchange doesn't support fractional pennies: $this" }
+    requireMaxDecimalPlacesAllowed(2U) { "Exchange doesn't support fractional pennies: $this" }
     return (this * 100).toLong().toPennies()
 }

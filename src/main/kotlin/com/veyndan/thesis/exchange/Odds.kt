@@ -1,23 +1,28 @@
+@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
+
 package com.veyndan.thesis.exchange
 
-import java.math.BigDecimal
+import com.veyndan.thesis.requireMaxDecimalPlacesAllowed
 
-sealed class Odds {
+/**
+ * @property value The odds stored as an integer, where the raw odds are multiplied by 100.
+ */
+inline class Odds(val value: ULong) {
 
-    abstract val value: BigDecimal
+    companion object {
 
-    fun matches(other: Odds) = when (this) {
-        is Back -> other is Lay && value <= other.value
-        is Lay -> other is Back && value >= other.value
+        val COMPARATOR_BACK = Comparator<Odds> { o1, o2 -> o1.value.compareTo(o2.value) }
+        val COMPARATOR_LAY = Comparator<Odds> { o1, o2 -> o2.value.compareTo(o1.value) }
     }
+}
 
-    data class Back(override val value: BigDecimal) : Odds(), Comparable<Back> {
+fun Int.toOdds(): Odds = toULong().toOdds()
 
-        override fun compareTo(other: Back): Int = value.compareTo(other.value)
-    }
+fun Long.toOdds(): Odds = toULong().toOdds()
 
-    data class Lay(override val value: BigDecimal) : Odds(), Comparable<Lay> {
+fun ULong.toOdds(): Odds = Odds(this * 100U)
 
-        override fun compareTo(other: Lay): Int = other.value.compareTo(value)
-    }
+fun Double.toOdds(): Odds {
+    requireMaxDecimalPlacesAllowed(2U)
+    return Odds((this * 100).toLong().toULong())
 }
