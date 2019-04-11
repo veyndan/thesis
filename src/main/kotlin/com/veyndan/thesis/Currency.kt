@@ -2,7 +2,21 @@
 
 package com.veyndan.thesis
 
-inline class Pennies(val value: ULong)
+import com.veyndan.thesis.exchange.Odds
+import java.math.RoundingMode
+
+inline class Pennies(val value: ULong) : Comparable<Pennies> {
+
+    override fun compareTo(other: Pennies): Int = value.compareTo(other.value)
+
+    operator fun plus(other: Pennies) = Pennies(value + other.value)
+
+    operator fun minus(other: Pennies) = Pennies(value - other.value)
+
+    operator fun times(other: Pennies) = Pennies(value * other.value)
+
+    operator fun times(other: Odds) = Pennies((value * other.value).toLong().toBigDecimal().divide(100.toBigDecimal(), RoundingMode.HALF_UP).toLong().toULong())
+}
 
 fun Int.toPennies(): Pennies = toULong().toPennies()
 

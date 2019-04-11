@@ -7,12 +7,16 @@ import com.veyndan.thesis.requireMaxDecimalPlacesAllowed
 /**
  * @property value The odds stored as an integer, where the raw odds are multiplied by 100.
  */
-inline class Odds(val value: ULong) {
+inline class Odds(val value: ULong) : Comparable<Odds> {
+
+    override fun compareTo(other: Odds): Int = value.compareTo(other.value)
+
+    operator fun minus(other: Odds) = Odds(value - other.value)
 
     companion object {
 
-        val COMPARATOR_BACK = Comparator<Odds> { o1, o2 -> o1.value.compareTo(o2.value) }
-        val COMPARATOR_LAY = Comparator<Odds> { o1, o2 -> o2.value.compareTo(o1.value) }
+        val COMPARATOR_BACK = Comparator<Odds> { o1, o2 -> o1.compareTo(o2) }
+        val COMPARATOR_LAY = Comparator<Odds> { o1, o2 -> o2.compareTo(o1) }
     }
 }
 
