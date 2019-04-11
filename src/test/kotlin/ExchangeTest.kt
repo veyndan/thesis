@@ -393,10 +393,8 @@ class ExchangeTest {
             addOrder(Order.Lay(Bettor.Id(1U), 5.toPounds(), 1.8.toOdds()))
         }
 
-        println(exchange.orderBook.backs)
-        println(exchange.orderBook.lays)
-
-        assert(false)
+        assertEquals(87.toPounds(), exchange.bettors[0].funds)
+        assertEquals(95.1.toPounds(), exchange.bettors[1].funds)
     }
 
     @Test
