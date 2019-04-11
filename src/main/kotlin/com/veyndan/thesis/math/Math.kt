@@ -8,6 +8,9 @@ import kotlin.random.nextInt
 
 val NATURAL_NUMBERS = generateSequence(0UL) { it + 1U }
 
+val Double.decimalPlaces: UShort
+    get() = toString().split('.').last().length.toUShort()
+
 open class Bound(open val value: Double, private val range: ClosedFloatingPointRange<Double>) {
 
     init {

@@ -2,7 +2,7 @@
 
 package com.veyndan.thesis.exchange
 
-import com.veyndan.thesis.requireMaxDecimalPlacesAllowed
+import com.veyndan.thesis.math.decimalPlaces
 
 /**
  * @property value The odds stored as an integer, where the raw odds are multiplied by 100.
@@ -12,6 +12,8 @@ inline class Odds(val value: ULong) : Comparable<Odds> {
     override fun compareTo(other: Odds): Int = value.compareTo(other.value)
 
     operator fun minus(other: Odds) = Odds(value - other.value)
+
+    operator fun rem(other: Odds) = Odds(value % other.value)
 
     companion object {
 
@@ -27,6 +29,6 @@ fun Long.toOdds(): Odds = toULong().toOdds()
 fun ULong.toOdds(): Odds = Odds(this * 100U)
 
 fun Double.toOdds(): Odds {
-    requireMaxDecimalPlacesAllowed(2U)
+    require(decimalPlaces <= 2U)
     return Odds((this * 100).toLong().toULong())
 }
