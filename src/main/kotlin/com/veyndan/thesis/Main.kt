@@ -18,13 +18,11 @@ fun main() {
     val competitorsSample = competitors.sample(2..Int.MAX_VALUE)
 
     val race = Race(
-        Track(
-            Distance(500.0),
-            List(factorCount) { Track.Factor(random.nextDouble(0.0, 1.0)) }),
+        Track(Distance(500.0), List(factorCount) { Track.Factor(random.nextDouble(0.0, 1.0)) }),
         competitorsSample
     )
 
-    val bettors = Bettor.generate(5.toPounds().value..10.toPounds().value).take(10).toList()
+    val bettors = Bettor.generate(5.toPounds()..10.toPounds()).take(10).toList()
     val bettorsSample = bettors.sample(2..Int.MAX_VALUE)
 
     println("TRACK")

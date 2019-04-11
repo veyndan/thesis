@@ -5,6 +5,7 @@ package com.veyndan.thesis
 import com.veyndan.thesis.exchange.Odds
 import com.veyndan.thesis.math.decimalPlaces
 import java.math.RoundingMode
+import kotlin.random.Random
 
 inline class Pennies(val value: ULong) : Comparable<Pennies> {
 
@@ -22,6 +23,8 @@ inline class Pennies(val value: ULong) : Comparable<Pennies> {
 
     operator fun times(other: Odds) = Pennies((value * other.value).toLong().toBigDecimal().divide(100.toBigDecimal(), RoundingMode.HALF_UP).toLong().toULong())
 }
+
+fun ClosedRange<Pennies>.random(random: Random): Pennies = (start.value..endInclusive.value).random(random).toPennies()
 
 fun Int.toPennies(): Pennies {
     require(this >= 0)

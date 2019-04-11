@@ -11,6 +11,8 @@ inline class Odds(val value: ULong) : Comparable<Odds> {
 
     override fun compareTo(other: Odds): Int = value.compareTo(other.value)
 
+    operator fun plus(other: Odds) = Odds(value + other.value)
+
     operator fun minus(other: Odds) = Odds(value - other.value)
 
     operator fun rem(other: Odds) = Odds(value % other.value)
