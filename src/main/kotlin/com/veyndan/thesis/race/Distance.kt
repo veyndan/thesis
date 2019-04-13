@@ -1,3 +1,6 @@
 package com.veyndan.thesis.race
 
-inline class Distance(val value: Double)
+inline class Distance(val value: Double) {
+
+    operator fun plus(other: Distance) = Distance(value + other.value)
+}

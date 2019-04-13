@@ -12,7 +12,7 @@ data class Competitor(val variability: ClosedFloatingPointRange<Double>, val pre
 
     private fun compatibility(factors: List<Track.Factor>): Double = abs(1 - euclideanDistance(factors, preferences))
 
-    fun stepSize(factors: List<Track.Factor>): Double = body() * compatibility(factors)
+    fun stepSize(factors: List<Track.Factor>): Distance = Distance(body() * compatibility(factors))
 
     data class Preference(override val value: Double) : Bound(value, 0.0..1.0)
 

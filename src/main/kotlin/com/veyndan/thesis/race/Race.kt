@@ -9,7 +9,7 @@ data class Race(val track: Track, val competitors: List<Competitor>) {
             .takeWhile { it.any { (_, distance) -> distance.value < track.length.value } }
             .flatMap {
                 positions(it.mapValues { (competitor, distance) ->
-                    Distance(min(distance.value + competitor.stepSize(track.factors), track.length.value))
+                    Distance(min((distance + competitor.stepSize(track.factors)).value, track.length.value))
                 })
             }
 }
