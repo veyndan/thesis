@@ -2,7 +2,7 @@ package com.veyndan.thesis.race
 
 import kotlin.math.min
 
-data class Race(val track: Track, private val competitors: List<Competitor>) {
+data class Race(val track: Track, val competitors: List<Competitor>) {
 
     fun positions(competitorsDistance: Map<Competitor, Distance> = competitors.associateWith { Distance(0.0) }): Sequence<Map<Competitor, Distance>> =
         sequenceOf(competitorsDistance) + sequenceOf(competitorsDistance)

@@ -3,7 +3,6 @@
 package com.veyndan.thesis.exchange
 
 import com.veyndan.thesis.Pennies
-import com.veyndan.thesis.math.NATURAL_NUMBERS
 import com.veyndan.thesis.math.random
 import com.veyndan.thesis.random
 
@@ -13,7 +12,7 @@ data class Bettor(val id: Id, var funds: Pennies) {
 
     companion object {
 
-        fun generate(fundsRange: ClosedRange<Pennies>) = NATURAL_NUMBERS
-            .map { i -> Bettor(id = Bettor.Id(i), funds = fundsRange.random(random)) }
+        fun generator(fundsRange: ClosedRange<Pennies>): (index: Int) -> Bettor =
+            { index -> Bettor(id = Bettor.Id(index.toULong()), funds = fundsRange.random(random)) }
     }
 }
