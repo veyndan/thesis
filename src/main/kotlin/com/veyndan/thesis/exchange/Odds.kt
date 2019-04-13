@@ -3,6 +3,7 @@
 package com.veyndan.thesis.exchange
 
 import com.veyndan.thesis.math.decimalPlaces
+import kotlin.math.roundToLong
 
 /**
  * @property value The odds stored as an integer, where the raw odds are multiplied by 100.
@@ -23,6 +24,8 @@ inline class Odds(val value: ULong) : Comparable<Odds> {
         val COMPARATOR_LAY = Comparator<Odds> { o1, o2 -> o2.compareTo(o1) }
     }
 }
+
+fun Probability.toOdds() = Odds(((1 / value) * 100).roundToLong().toULong())
 
 fun Int.toOdds(): Odds = toULong().toOdds()
 
