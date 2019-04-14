@@ -1,5 +1,11 @@
 package com.veyndan.thesis
 
+operator fun <K, V> Map<K, List<V>>.plus(other: Map<K, V>): Map<K, List<V>> {
+    val map = mapValues { it.value.toMutableList() }.toMutableMap()
+    other.forEach { key, value -> map[key] = value }
+    return map.toMap()
+}
+
 fun <K, V> MutableMap<K, MutableList<V>>.put(key: K, value: V) {
     getOrPut(key) { mutableListOf() } += value
 }

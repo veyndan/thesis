@@ -16,6 +16,8 @@ data class Competitor(val variability: ClosedFloatingPointRange<Double>, val pre
 
     data class Preference(override val value: Double) : Bound(value, 0.0..1.0)
 
+    override fun toString(): String = "Competitor"
+
     companion object {
 
         fun generator(factorCount: Int, rangeBounds: ClosedFloatingPointRange<Double>): (index: Int) -> Competitor = {
