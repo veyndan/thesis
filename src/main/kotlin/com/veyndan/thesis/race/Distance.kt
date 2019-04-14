@@ -1,5 +1,7 @@
 package com.veyndan.thesis.race
 
+import org.nield.kotlinstatistics.averageBy
+
 inline class Distance(val value: Double) {
 
     operator fun plus(other: Distance) = Distance(value + other.value)
@@ -10,3 +12,8 @@ inline class Distance(val value: Double) {
 }
 
 fun Iterable<Distance>.sum() = Distance(sumByDouble { it.value })
+
+fun Sequence<Map<Competitor, Distance>>.averageBy(): Map<Competitor, Distance> = flatMap { it.entries.asSequence() }
+    .map { (key, value) -> key to value.value }
+    .averageBy()
+    .mapValues { (_, value) -> Distance(value) }

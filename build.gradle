@@ -32,11 +32,12 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    implementation 'org.apache.commons:commons-math3:3.6.1'
+    implementation 'com.squareup.sqldelight:sqlite-driver:1.1.0'
+    implementation 'com.squareup.sqldelight:rxjava2-extensions:1.1.0'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
-    implementation "com.squareup.sqldelight:sqlite-driver:1.1.0"
-    implementation "com.squareup.sqldelight:rxjava2-extensions:1.1.0"
+    implementation 'org.apache.commons:commons-math3:3.6.1'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.nield:kotlin-statistics:1.2.1'
 
     testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'

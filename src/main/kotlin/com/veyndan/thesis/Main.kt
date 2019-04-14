@@ -5,7 +5,6 @@ package com.veyndan.thesis
 import com.veyndan.thesis.exchange.Bettor
 import com.veyndan.thesis.exchange.Exchange
 import com.veyndan.thesis.exchange.Probability
-import com.veyndan.thesis.math.mean
 import com.veyndan.thesis.math.random
 import com.veyndan.thesis.math.sample
 import com.veyndan.thesis.race.*
@@ -32,8 +31,7 @@ fun main() {
 
         val dryRunProbabilities = exchange.bettors.asSequence()
             .map { bettor -> race.steps().take(bettor.dryRunCount) }
-            .map { dryRuns -> dryRuns.fold(mapOf<Competitor, List<Distance>>()) { acc, dryRun -> acc + dryRun } }
-            .map { dryRunsAccumulated -> dryRunsAccumulated.mapValues { it.value.mean() } }
+            .map { dryRuns -> dryRuns.averageBy() }
             .map { dryRunMeans ->
                 dryRunMeans.map { (competitor, distance) ->
                     val numerator = (race.track.length - positions.getValue(competitor)) / distance

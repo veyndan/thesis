@@ -2,7 +2,7 @@ package com.veyndan.thesis
 
 operator fun <K, V> Map<K, List<V>>.plus(other: Map<K, V>): Map<K, List<V>> {
     val map = mapValues { it.value.toMutableList() }.toMutableMap()
-    other.forEach { key, value -> map[key] = value }
+    other.forEach { (key, value) -> map[key] = value }
     return map.toMap()
 }
 
