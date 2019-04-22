@@ -32,8 +32,8 @@ sealed class Order {
     }
 
     fun matches(other: Order) = when (this) {
-        is Order.Back -> other is Order.Lay && odds <= other.odds
-        is Order.Lay -> other is Order.Back && odds >= other.odds
+        is Back -> other is Lay && odds <= other.odds
+        is Lay -> other is Back && odds >= other.odds
     }
 
     data class Back(

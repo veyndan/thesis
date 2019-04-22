@@ -14,7 +14,7 @@ data class Bettor(val id: Id, var funds: Pennies, val dryRunCount: UInt) {
 
         fun generator(fundsRange: ClosedRange<Pennies>, dryRunsRange: UIntRange): (index: Int) -> Bettor = { index ->
             Bettor(
-                id = Bettor.Id(index.toULong()),
+                id = Id(index.toULong()),
                 funds = fundsRange.random(random),
                 dryRunCount = dryRunsRange.random(random)
             )
