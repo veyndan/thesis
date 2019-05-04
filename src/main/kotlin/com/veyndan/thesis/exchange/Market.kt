@@ -2,7 +2,7 @@
 
 package com.veyndan.thesis.exchange
 
-class Exchange(val bettors: List<Bettor>) {
+class Market(val bettors: List<Bettor>) {
 
     val orderBook = OrderBook()
 

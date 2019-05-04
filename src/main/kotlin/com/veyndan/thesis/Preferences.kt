@@ -1,3 +1,3 @@
 package com.veyndan.thesis
 
-val DEBUG = "false".toBoolean()
+val DEBUG = "true".toBoolean()

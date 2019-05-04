@@ -7,13 +7,13 @@ import io.kotlintest.shouldThrow
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class ExchangeTest {
+class MarketTest {
 
     @Test
     fun populate() {
         val bettors = listOf(Bettor(Bettor.Id(0U), 10.toPounds(), 0U))
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Back(Bettor.Id(0U), 2.toPounds(), 1.8.toOdds()))
             addOrder(Order.Lay(Bettor.Id(0U), 2.toPounds(), 1.7.toOdds()))
         }
@@ -35,7 +35,7 @@ class ExchangeTest {
             Bettor(Bettor.Id(1U), funds = 10.toPounds(), dryRunCount = 0U),
             Bettor(Bettor.Id(2U), funds = 10.toPounds(), dryRunCount = 0U)
         )
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Back(Bettor.Id(0U), 2.toPounds(), 1.7.toOdds()))
             addOrder(Order.Back(Bettor.Id(1U), 2.toPounds(), 1.8.toOdds()))
             addOrder(Order.Back(Bettor.Id(2U), 2.toPounds(), 1.7.toOdds()))
@@ -63,7 +63,7 @@ class ExchangeTest {
             Bettor(Bettor.Id(2U), funds = 100.toPounds(), dryRunCount = 0U)
         )
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Lay(Bettor.Id(0U), 10.toPounds(), 1.7.toOdds()))
             addOrder(Order.Lay(Bettor.Id(1U), 10.toPounds(), 1.8.toOdds()))
             addOrder(Order.Lay(Bettor.Id(2U), 10.toPounds(), 1.7.toOdds()))
@@ -87,7 +87,7 @@ class ExchangeTest {
     fun orderedBacksWhenPopulating() {
         val bettors = listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U))
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Back(Bettor.Id(0U), 10.toPounds(), 2.2.toOdds()))
             addOrder(Order.Back(Bettor.Id(0U), 10.toPounds(), 1.8.toOdds()))
             addOrder(Order.Back(Bettor.Id(0U), 10.toPounds(), 1.7.toOdds()))
@@ -107,7 +107,7 @@ class ExchangeTest {
     fun orderedLaysWhenPopulating() {
         val bettors = listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U))
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Lay(Bettor.Id(0U), 10.toPounds(), 1.8.toOdds()))
             addOrder(Order.Lay(Bettor.Id(0U), 10.toPounds(), 1.7.toOdds()))
             addOrder(Order.Lay(Bettor.Id(0U), 10.toPounds(), 2.2.toOdds()))
@@ -127,7 +127,7 @@ class ExchangeTest {
     fun `A bettor cancels a back order`() {
         val bettors = listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U))
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Back(Bettor.Id(0U), 10.toPounds(), 1.8.toOdds()))
             addOrder(Order.Back(Bettor.Id(0U), 10.toPounds(), 1.7.toOdds()))
         }
@@ -146,7 +146,7 @@ class ExchangeTest {
     fun `A bettor cancels a lay order`() {
         val bettors = listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U))
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Lay(Bettor.Id(0U), 10.toPounds(), 1.8.toOdds()))
             addOrder(Order.Lay(Bettor.Id(0U), 10.toPounds(), 1.7.toOdds()))
         }
@@ -165,7 +165,7 @@ class ExchangeTest {
     fun marketOrderSamePricedBack() {
         val bettors = listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U))
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Lay(Bettor.Id(0U), 10.toPounds(), 1.7.toOdds()))
             addOrder(Order.Lay(Bettor.Id(0U), 10.toPounds(), 1.9.toOdds()))
             addOrder(Order.Back(Bettor.Id(0U), 10.toPounds(), 1.8.toOdds()))
@@ -186,7 +186,7 @@ class ExchangeTest {
     fun marketOrderSamePricedLay() {
         val bettors = listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U))
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Back(Bettor.Id(0U), 10.toPounds(), 1.7.toOdds()))
             addOrder(Order.Back(Bettor.Id(0U), 10.toPounds(), 1.9.toOdds()))
             addOrder(Order.Lay(Bettor.Id(0U), 10.toPounds(), 1.8.toOdds()))
@@ -204,7 +204,7 @@ class ExchangeTest {
     fun marketOrderMatchBack() {
         val bettors = listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U))
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Lay(Bettor.Id(0U), 10.toPounds(), 1.7.toOdds()))
             addOrder(Order.Lay(Bettor.Id(0U), 10.toPounds(), 1.9.toOdds()))
             addOrder(Order.Back(Bettor.Id(0U), 6.toPounds(), 1.8.toOdds()))
@@ -228,7 +228,7 @@ class ExchangeTest {
     fun recursiveMarketOrderMatchBack() {
         val bettors = listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U))
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Lay(Bettor.Id(0U), 3.toPounds(), 1.7.toOdds()))
             addOrder(Order.Lay(Bettor.Id(0U), 5.toPounds(), 1.9.toOdds()))
             addOrder(Order.Lay(Bettor.Id(0U), 32.toPounds(), 1.6.toOdds()))
@@ -250,7 +250,7 @@ class ExchangeTest {
     fun recursiveMarketOrderPartialMatchBack() {
         val bettors = listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U))
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Lay(Bettor.Id(0U), 3.toPounds(), 1.7.toOdds()))
             addOrder(Order.Lay(Bettor.Id(0U), 5.toPounds(), 1.9.toOdds()))
             addOrder(Order.Lay(Bettor.Id(0U), 11.toPounds(), 1.6.toOdds()))
@@ -272,7 +272,7 @@ class ExchangeTest {
     fun marketOrderMatchLay() {
         val bettors = listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U))
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Back(Bettor.Id(0U), 10.toPounds(), 1.6.toOdds()))
             addOrder(Order.Back(Bettor.Id(0U), 10.toPounds(), 1.9.toOdds()))
             addOrder(Order.Lay(Bettor.Id(0U), 6.toPounds(), 1.8.toOdds()))
@@ -296,7 +296,7 @@ class ExchangeTest {
     fun recursiveMarketOrderMatchLay() {
         val bettors = listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U))
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Back(Bettor.Id(0U), 3.toPounds(), 1.7.toOdds()))
             addOrder(Order.Back(Bettor.Id(0U), 32.toPounds(), 1.9.toOdds()))
             addOrder(Order.Back(Bettor.Id(0U), 5.toPounds(), 1.6.toOdds()))
@@ -318,7 +318,7 @@ class ExchangeTest {
     fun recursiveMarketOrderPartialMatchLay() {
         val bettors = listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U))
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Back(Bettor.Id(0U), 3.toPounds(), 1.7.toOdds()))
             addOrder(Order.Back(Bettor.Id(0U), 11.toPounds(), 1.9.toOdds()))
             addOrder(Order.Back(Bettor.Id(0U), 5.toPounds(), 1.6.toOdds()))
@@ -338,7 +338,7 @@ class ExchangeTest {
 
     @Test
     fun `Funds reduced after limit order`() {
-        val exchange = Exchange(listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U)))
+        val exchange = Market(listOf(Bettor(Bettor.Id(0U), funds = 100.toPounds(), dryRunCount = 0U)))
 
         exchange.addOrder(Order.Back(Bettor.Id(0U), 5.toPounds(), 1.8.toOdds()))
         assertEquals(95.toPounds(), exchange.bettors[0].funds)
@@ -354,7 +354,7 @@ class ExchangeTest {
             Bettor(Bettor.Id(1U), funds = 10.toPounds(), dryRunCount = 0U)
         )
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Back(Bettor.Id(0U), 5.toPounds(), 1.7.toOdds()))
             addOrder(Order.Lay(Bettor.Id(1U), 5.toPounds(), 1.8.toOdds()))
         }
@@ -370,7 +370,7 @@ class ExchangeTest {
             Bettor(Bettor.Id(1U), funds = 10.toPounds(), dryRunCount = 0U)
         )
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Back(Bettor.Id(0U), 3.toPounds(), 1.7.toOdds()))
             addOrder(Order.Lay(Bettor.Id(1U), 5.toPounds(), 1.8.toOdds()))
         }
@@ -386,7 +386,7 @@ class ExchangeTest {
             Bettor(Bettor.Id(1U), funds = 100.toPounds(), dryRunCount = 0U)
         )
 
-        val exchange = Exchange(bettors).apply {
+        val exchange = Market(bettors).apply {
             addOrder(Order.Back(Bettor.Id(0U), 7.toPounds(), 1.5.toOdds()))
             addOrder(Order.Lay(Bettor.Id(1U), 3.toPounds(), 1.3.toOdds()))
             addOrder(Order.Back(Bettor.Id(0U), 6.toPounds(), 1.7.toOdds()))
@@ -400,7 +400,7 @@ class ExchangeTest {
     @Test
     fun `A bettor doesn't have enough funds to place order`() {
         // Throw NoeEnoughFundsException if out of funds
-        val exchange = Exchange(listOf(Bettor(Bettor.Id(0U), funds = 10.toPounds(), dryRunCount = 0U)))
+        val exchange = Market(listOf(Bettor(Bettor.Id(0U), funds = 10.toPounds(), dryRunCount = 0U)))
 
         shouldThrow<InsufficientFundsException> {
             exchange.addOrder(Order.Back(Bettor.Id(0U), 20.toPounds(), 1.7.toOdds()))
@@ -414,7 +414,7 @@ class ExchangeTest {
         val order = Order.Lay(Bettor.Id(0U), 12.34.toPounds(), 1.23.toOdds())
         assertEquals(2.84.toPounds(), order.liability)
 
-        val exchange = Exchange(listOf(Bettor(Bettor.Id(0U), funds = 10.toPounds(), dryRunCount = 0U))).apply {
+        val exchange = Market(listOf(Bettor(Bettor.Id(0U), funds = 10.toPounds(), dryRunCount = 0U))).apply {
             addOrder(order)
         }
 
