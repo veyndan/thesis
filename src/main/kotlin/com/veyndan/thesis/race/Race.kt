@@ -2,47 +2,28 @@
 
 package com.veyndan.thesis.race
 
+import com.veyndan.thesis.utility.mergeWith
+
+inline class Position(val value: UInt)
+
 data class Race(val track: Track, val competitors: List<Competitor>) {
 
 //    fun steps(): Sequence<Map<Competitor, Distance>> = generateSequence { competitors.map { it to it.stepSize(track.factors) }.toMap() }
 
-    data class Position(val position: UInt, val distance: Distance)
-
-    fun positions(competitorsDistance: Map<Competitor, Position> = competitors.associateWith { Position(0U, Distance(0.0)) }): Sequence<Map<Competitor, Position>> =
+    fun positions(competitorsDistance: Map<Competitor, Pair<Position, Distance>> = competitors.associateWith { Position(0U) to Distance(0.0) }): Sequence<Map<Competitor, Pair<Position, Distance>>> =
         sequenceOf(competitorsDistance) + sequenceOf(competitorsDistance)
-            .takeWhile { it.all { (_, position) -> position.distance < track.length } }
-            .flatMap {
-                //                val competitorsStep = it.mapValues { (competitor, _) -> competitor.stepSize(track.factors) }
-//                val nextDistance = it.mergeReduce(competitorsStep) { distance, step -> Distance(min((distance + step).value, track.length.value)) }
-//
-//                val multipleWinners = nextDistance.values.countBy().getOrDefault(track.length, 0) > 1
-//
-//                if (!multipleWinners) {
-//                    positions(nextDistance)
-//                } else {
-//                    val competitorsStep = competitorsStep.mapValues { (_, step) -> step / 2.0 }
-//                    val nextDistance = it.mergeReduce(competitorsStep) { distance, step -> Distance(min((distance + step).value, track.length.value)) }
-//
-//                    val multipleWinners = nextDistance.values.countBy().getOrDefault(track.length, 0) > 1
-//
-//                    if (!multipleWinners) {
-//                        positions(nextDistance)
-//                    } else {
-//                        val competitorsStep = competitorsStep.mapValues { (_, step) -> step / 2.0 }Z
-//                        val nextDistance = it.mergeReduce(competitorsStep) { distance, step -> Distance(min((distance + step).value, track.length.value)) }
-//
-//                        positions(nextDistance)
-//                    }
-//
-//                    positions(nextDistance)
-//                }
+            .takeWhile { it.all { (_, position) -> position.second < track.length } }
+            .flatMap { competitorsDistance ->
+                // TODO Correct position
+                // TODO If more than one horse has passed the finish line in one timestep, take the horse with the greatest step size.
+                val updatedDistance = competitorsDistance.mapValues { (competitor, position) -> min(position.second + competitor.stepSize(track.factors), track.length) }
+                val updatedPositions = updatedDistance.entries
+                    .sortedByDescending { (_, distance) -> distance }
+                    .withIndex()
+                    .map { (index, value) -> value.key to Position(index.toUInt()) }
+                    .toMap()
 
-                // Generate all the next steps.
-                // If when adding all the next steps, no more than one horse is past the finished line, then return these new positions
-                // Else, map the steps to half their value, and add them, and check to see if no more than half of the horses are past the finished line.
-                // Iteratively do this until a step increment has at most one horse past the finish line
-                positions(it.mapValues { (competitor, position) ->
-                    Position(0U, min(position.distance + competitor.stepSize(track.factors), track.length))
-                })
+//                println(positions.map { (index, value) -> Position(index, value.) })
+                positions(updatedPositions.mergeWith(updatedDistance) { position, distance -> position to distance })
             }
 }

@@ -71,5 +71,18 @@ inline fun <T, V> zip(vararg lists: List<T>, transform: (List<T>) -> V): List<V>
     return list
 }
 
-fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V): Map<K, V> =
-    this.toMutableMap().apply { other.forEach { merge(it.key, it.value, reduce) } }
+fun Map<String, String>.mergeWith(another: Map<String, String>): Map<String, String> {
+    val unionList: MutableMap<String, String> = toMutableMap()
+    for ((key, value) in another) {
+        unionList[key] = listOfNotNull(unionList[key], value).toSet().joinToString(", ")
+    }
+    return unionList
+}
+
+fun <K, V0, V1, V2> Map<K, V0>.mergeWith(other: Map<K, V1>, reduce: (V0, V1) -> V2): Map<K, V2> {
+    val result = mutableMapOf<K, V2>()
+    forEach { key, value ->
+        result += key to reduce(value, other.getValue(key))
+    }
+    return result
+}

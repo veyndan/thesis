@@ -12,7 +12,7 @@ import com.veyndan.thesis.race.Track
 fun main() {
     val factorCount = 100
 
-    val competitorPool = List(10, Competitor.generator(factorCount, rangeBounds = 0.7..0.8))
+    val competitorPool = List(10, Competitor.generator(factorCount, rangeBounds = 7.0..8.0))
     val trackPool = List(10, Track.generator(factorCount))
     val bettorPool = List(10, Bettor.generator(fundsRange = 5.toPounds()..10.toPounds(), dryRunsRange = 0U..100U))
 
