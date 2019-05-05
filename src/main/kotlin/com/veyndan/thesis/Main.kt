@@ -55,7 +55,7 @@ fun main() {
 //    println(c.map { it.average() }.onEach { println(it) }.sum())
 
     race.positions().forEachIndexed { tick, positions ->
-        println("$tick $positions")
+//        println("$tick $positions")
 
 //        val a = (0 until 100)
 //            .toFlowable()

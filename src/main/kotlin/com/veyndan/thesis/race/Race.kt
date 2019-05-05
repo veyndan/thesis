@@ -2,9 +2,10 @@
 
 package com.veyndan.thesis.race
 
-import com.veyndan.thesis.utility.mergeWith
+inline class Position(val value: UInt) {
 
-inline class Position(val value: UInt)
+    override fun toString() = "Position($value)"
+}
 
 data class Race(val track: Track, val competitors: List<Competitor>) {
 
@@ -17,13 +18,20 @@ data class Race(val track: Track, val competitors: List<Competitor>) {
                 // TODO Correct position
                 // TODO If more than one horse has passed the finish line in one timestep, take the horse with the greatest step size.
                 val updatedDistance = competitorsDistance.mapValues { (competitor, position) -> min(position.second + competitor.stepSize(track.factors), track.length) }
-                val updatedPositions = updatedDistance.entries
+                val groupedDistances = updatedDistance.entries
                     .sortedByDescending { (_, distance) -> distance }
+                    .groupBy { it.value }
+                    .mapValues { it.value.map { it.toPair() }.toMap() }
+                    .entries
                     .withIndex()
-                    .map { (index, value) -> value.key to Position(index.toUInt()) }
+                    .flatMap { (index, value) -> value.value.mapValues { Position(index.toUInt()) to it.value }.entries }
+                    .map { it.toPair() }
                     .toMap()
 
+                groupedDistances.forEach(::println)
+                println()
+
 //                println(positions.map { (index, value) -> Position(index, value.) })
-                positions(updatedPositions.mergeWith(updatedDistance) { position, distance -> position to distance })
+                positions(groupedDistances)
             }
 }

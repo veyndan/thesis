@@ -18,6 +18,8 @@ inline class Distance(val value: Double) : Comparable<Distance> {
     operator fun div(other: Double) = Distance(value / other)
 
     override fun compareTo(other: Distance) = value.compareTo(other.value)
+
+    override fun toString() = "Distance($value)"
 }
 
 operator fun Int.times(other: Distance) = Distance(this * other.value)
