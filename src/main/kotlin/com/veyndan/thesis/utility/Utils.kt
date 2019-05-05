@@ -70,3 +70,6 @@ inline fun <T, V> zip(vararg lists: List<T>, transform: (List<T>) -> V): List<V>
 
     return list
 }
+
+fun <K, V> Map<K, V>.mergeReduce(other: Map<K, V>, reduce: (V, V) -> V): Map<K, V> =
+    this.toMutableMap().apply { other.forEach { merge(it.key, it.value, reduce) } }

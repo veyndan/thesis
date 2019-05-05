@@ -4,7 +4,9 @@ import org.nield.kotlinstatistics.Descriptives
 import org.nield.kotlinstatistics.averageBy
 import org.nield.kotlinstatistics.descriptiveStatisticsBy
 
-inline class Distance(val value: Double) {
+fun min(a: Distance, b: Distance) = Distance(Math.min(a.value, b.value))
+
+inline class Distance(val value: Double) : Comparable<Distance> {
 
     operator fun plus(other: Distance) = Distance(value + other.value)
 
@@ -14,6 +16,8 @@ inline class Distance(val value: Double) {
     operator fun div(other: Distance) = value / other.value
 
     operator fun div(other: Double) = Distance(value / other)
+
+    override fun compareTo(other: Distance) = value.compareTo(other.value)
 }
 
 operator fun Int.times(other: Distance) = Distance(this * other.value)
@@ -24,6 +28,7 @@ fun Sequence<Map<Competitor, Distance>>.averageBy(): Map<Competitor, Distance> =
     .averageBy(keySelector = { it.key }, doubleSelector = { it.value.value })
     .mapValues { Distance(it.value) }
 
-fun Sequence<Map<Competitor, Distance>>.descriptiveStatisticsBy(): Map<Competitor, Descriptives> = flatMap { it.entries.asSequence() }
-    .descriptiveStatisticsBy(keySelector = { it.key }, valueSelector = { it.value.value })
-    .mapValues { it.value }
+fun Sequence<Map<Competitor, Distance>>.descriptiveStatisticsBy(): Map<Competitor, Descriptives> =
+    flatMap { it.entries.asSequence() }
+        .descriptiveStatisticsBy(keySelector = { it.key }, valueSelector = { it.value.value })
+        .mapValues { it.value }
