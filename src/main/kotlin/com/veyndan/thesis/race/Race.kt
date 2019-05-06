@@ -8,15 +8,6 @@ import com.veyndan.thesis.utility.toMap
 import kotlin.math.E
 import kotlin.math.pow
 
-inline class Position(val value: UInt) : Comparable<Position> {
-
-    operator fun plus(other: Position) = Position(value + other.value)
-
-    override fun compareTo(other: Position) = value.compareTo(other.value)
-
-    override fun toString() = "Position($value)"
-}
-
 data class Race(val track: Track, val competitors: List<Competitor>) {
 
     private val steps = competitors

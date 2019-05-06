@@ -9,14 +9,14 @@ import com.veyndan.thesis.math.random
 import com.veyndan.thesis.race.Competitor
 import com.veyndan.thesis.race.Race
 import com.veyndan.thesis.race.Track
-import io.reactivex.rxkotlin.toFlowable
+import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
 import org.nield.kotlinstatistics.countBy
 
 fun main() {
     val factorCount = 100
 
-    val competitorPool = List(20, Competitor.generator(factorCount, variability = { random.nextDoubleRange(5.0..10.0) }))
+    val competitorPool = List(10000, Competitor.generator(factorCount, variability = { random.nextDoubleRange(5.0..10.0) }))
     val trackPool = List(10, Track.generator(factorCount))
     val bettorPool = List(10, Bettor.generator(fundsRange = 5.toPounds()..10.toPounds(), dryRunsRange = 0U..100U))
 
@@ -51,28 +51,15 @@ fun main() {
 
     race.positions().forEachIndexed { tick, positions ->
         println("tick=$tick")
-
         positions.forEach(::println)
 
-        val a = (0 until 100)
-            .toFlowable()
-            .subscribeOn(Schedulers.computation())
-            .observeOn(Schedulers.computation())
-            .map {
-                println(Thread.currentThread())
-                race.positions().last().mapValues { it.value.first }.maxBy { (_, position) -> position }!!.key
-            }
-            .toList()
-            .subscribe { dryRunWinners -> println(dryRunWinners.countBy()) }
+        val dryRunWinners = Flowable.range(0, 100).parallel()
+            .runOn(Schedulers.computation())
+            .map { race.positions(positions).last().mapValues { it.value.first }.minBy { (_, position) -> position }!!.key }
+            .sequential()
+            .blockingIterable()
 
-        while (!a.isDisposed) {
-        }
-
-//        println(
-//            (0 until 100)
-//                .map { race.positions(positions).last().mapValues { it.value.first }.minBy { (_, position) -> position }!!.key }
-//                .countBy()
-//        )
+        println(dryRunWinners.countBy())
 
         println()
     }
