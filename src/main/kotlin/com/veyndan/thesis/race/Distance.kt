@@ -12,6 +12,8 @@ inline class Distance(val value: Double) : Comparable<Distance> {
 
     operator fun minus(other: Distance) = Distance(value - other.value)
 
+    operator fun times(other: Double) = Distance(value * other)
+
     // The units cancel each other out when dividing, e.g. 4km/2km=2.
     operator fun div(other: Distance) = value / other.value
 

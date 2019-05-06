@@ -6,19 +6,17 @@ import com.veyndan.thesis.exchange.Bettor
 import com.veyndan.thesis.exchange.Market
 import com.veyndan.thesis.math.nextDoubleRange
 import com.veyndan.thesis.math.random
-import com.veyndan.thesis.math.sample
 import com.veyndan.thesis.race.Competitor
 import com.veyndan.thesis.race.Race
 import com.veyndan.thesis.race.Track
-import com.veyndan.thesis.utility.toMap
+import io.reactivex.rxkotlin.toFlowable
+import io.reactivex.schedulers.Schedulers
 import org.nield.kotlinstatistics.countBy
-import kotlin.math.E
-import kotlin.math.pow
 
 fun main() {
     val factorCount = 100
 
-    val competitorPool = List(1000, Competitor.generator(factorCount, variability = { random.nextDoubleRange(5.0..10.0) }))
+    val competitorPool = List(20, Competitor.generator(factorCount, variability = { random.nextDoubleRange(5.0..10.0) }))
     val trackPool = List(10, Track.generator(factorCount))
     val bettorPool = List(10, Bettor.generator(fundsRange = 5.toPounds()..10.toPounds(), dryRunsRange = 0U..100U))
 
@@ -52,37 +50,29 @@ fun main() {
     println()
 
     race.positions().forEachIndexed { tick, positions ->
-        println("tick=$tick positionsSize=${positions.size}")
-        positions.forEach { entry ->
-            val aheadCompetitors = positions
-                .filter { it != entry }
-                .filterValues { pair -> pair.first <= entry.value.first }
+        println("tick=$tick")
 
-            val hinderingCompetitors = aheadCompetitors.entries.sample(aheadCompetitors.entries.indices).toMap()
+        positions.forEach(::println)
 
-            val g = hinderingCompetitors.values
-                .map { (it.second - entry.value.second).value }
-                .fold(1.0) { acc, distance -> acc - (E.pow(-distance) / race.competitors.size) }
+        val a = (0 until 100)
+            .toFlowable()
+            .subscribeOn(Schedulers.computation())
+            .observeOn(Schedulers.computation())
+            .map {
+                println(Thread.currentThread())
+                race.positions().last().mapValues { it.value.first }.maxBy { (_, position) -> position }!!.key
+            }
+            .toList()
+            .subscribe { dryRunWinners -> println(dryRunWinners.countBy()) }
 
-            println("$entry ahead=${aheadCompetitors.keys.map { it.index }} hindering=${hinderingCompetitors.map { it.key.index }} g=$g")
+        while (!a.isDisposed) {
         }
 
-//        val a = (0 until 5)
-//            .toFlowable()
-//            .subscribeOn(Schedulers.computation())
-//            .observeOn(Schedulers.computation())
-//            .map { race.positions().last().mapValues { it.value.first }.maxBy { (_, position) -> position }!!.key }
-//            .toList()
-//            .subscribe { dryRunWinners -> println(dryRunWinners.countBy()) }
-//
-//        while (!a.isDisposed) {
-//        }
-
-        println(
-            (0 until 100)
-                .map { race.positions(positions).last().mapValues { it.value.first }.minBy { (_, position) -> position }!!.key }
-                .countBy()
-        )
+//        println(
+//            (0 until 100)
+//                .map { race.positions(positions).last().mapValues { it.value.first }.minBy { (_, position) -> position }!!.key }
+//                .countBy()
+//        )
 
         println()
     }

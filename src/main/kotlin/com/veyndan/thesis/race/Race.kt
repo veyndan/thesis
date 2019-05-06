@@ -2,8 +2,11 @@
 
 package com.veyndan.thesis.race
 
+import com.veyndan.thesis.math.sample
 import com.veyndan.thesis.utility.mergeWith
 import com.veyndan.thesis.utility.toMap
+import kotlin.math.E
+import kotlin.math.pow
 
 inline class Position(val value: UInt) : Comparable<Position> {
 
@@ -26,7 +29,20 @@ data class Race(val track: Track, val competitors: List<Competitor>) {
         sequenceOf(competitorsDistance) + sequenceOf(competitorsDistance)
             .takeWhile { it.all { (_, pair) -> pair.second < track.length } }
             .flatMap { competitorsDistance ->
-                val deltas = competitorsDistance.mapValues { (competitor, _) -> steps.getValue(competitor).stepSize() }
+                val deltas = competitorsDistance.mapValues { entry ->
+                    val aheadCompetitors = competitorsDistance
+                        .filter { it != entry }
+                        .filterValues { pair -> pair.first <= entry.value.first }
+
+                    val hinderingCompetitors = aheadCompetitors.entries.sample(aheadCompetitors.entries.indices).toMap()
+
+                    val hinderingCompetitorsDistanceAhead = hinderingCompetitors.values.map { (it.second - entry.value.second).value }
+
+                    val g = 1.0 - (hinderingCompetitorsDistanceAhead.sumByDouble { distance -> E.pow(-distance) } / competitors.size)
+
+                    steps.getValue(entry.key).stepSize() * g
+                }
+
                 val distances = competitorsDistance.mergeWith(deltas) { pair, delta -> min(pair.second + delta, track.length) }
 
                 val groupedDistances = distances.entries
