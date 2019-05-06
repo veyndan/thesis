@@ -29,4 +29,4 @@ fun euclideanDistance(p1: List<Bound>, p2: List<Bound>): Double {
     return sqrt((p1 zip p2).sumByDouble { (it.first.value - it.second.value).pow(2) })
 }
 
-fun <T> List<T>.sample(n: IntRange) = shuffled().take(random.nextInt(n))
+fun <T> Iterable<T>.sample(n: IntRange) = if (toMutableList().isEmpty()) emptyList() else shuffled().take(random.nextInt(n))

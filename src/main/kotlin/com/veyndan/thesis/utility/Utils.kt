@@ -86,3 +86,5 @@ fun <K, V0, V1, V2> Map<K, V0>.mergeWith(other: Map<K, V1>, reduce: (V0, V1) -> 
     }
     return result
 }
+
+fun <K, V> List<Map.Entry<K, V>>.toMap() = associate { it.toPair() }

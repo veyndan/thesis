@@ -2,36 +2,60 @@
 
 package com.veyndan.thesis.race
 
-inline class Position(val value: UInt) {
+import com.veyndan.thesis.utility.mergeWith
+import com.veyndan.thesis.utility.toMap
+
+inline class Position(val value: UInt) : Comparable<Position> {
+
+    operator fun plus(other: Position) = Position(value + other.value)
+
+    override fun compareTo(other: Position) = value.compareTo(other.value)
 
     override fun toString() = "Position($value)"
 }
 
 data class Race(val track: Track, val competitors: List<Competitor>) {
 
-//    fun steps(): Sequence<Map<Competitor, Distance>> = generateSequence { competitors.map { it to it.stepSize(track.factors) }.toMap() }
+    private val steps = competitors
+        .map { competitor ->
+            competitor to Step(competitor.variability, competitor.preferences, track.factors)
+        }
+        .toMap()
 
     fun positions(competitorsDistance: Map<Competitor, Pair<Position, Distance>> = competitors.associateWith { Position(0U) to Distance(0.0) }): Sequence<Map<Competitor, Pair<Position, Distance>>> =
         sequenceOf(competitorsDistance) + sequenceOf(competitorsDistance)
-            .takeWhile { it.all { (_, position) -> position.second < track.length } }
+            .takeWhile { it.all { (_, pair) -> pair.second < track.length } }
             .flatMap { competitorsDistance ->
-                // TODO Correct position
-                // TODO If more than one horse has passed the finish line in one timestep, take the horse with the greatest step size.
-                val updatedDistance = competitorsDistance.mapValues { (competitor, position) -> min(position.second + competitor.stepSize(track.factors), track.length) }
-                val groupedDistances = updatedDistance.entries
+                val deltas = competitorsDistance.mapValues { (competitor, _) -> steps.getValue(competitor).stepSize() }
+                val distances = competitorsDistance.mergeWith(deltas) { pair, delta -> min(pair.second + delta, track.length) }
+
+                val groupedDistances = distances.entries
                     .sortedByDescending { (_, distance) -> distance }
                     .groupBy { it.value }
-                    .mapValues { it.value.map { it.toPair() }.toMap() }
+                    .mapValues { it.value.toMap() }
                     .entries
                     .withIndex()
                     .flatMap { (index, value) -> value.value.mapValues { Position(index.toUInt()) to it.value }.entries }
-                    .map { it.toPair() }
                     .toMap()
 
-                groupedDistances.forEach(::println)
-                println()
+                val winners = groupedDistances.filterValues { (position, distance) -> position == Position(0U) && distance == track.length }
+                val losers = groupedDistances.filterValues { (position, distance) -> position != Position(0U) || distance != track.length }
 
-//                println(positions.map { (index, value) -> Position(index, value.) })
-                positions(groupedDistances)
+                if (winners.size <= 1) {
+                    positions(groupedDistances)
+                } else {
+                    // If more than one winner, reassign the positions of the winners such that only the horse with the highest delta is given first place.
+
+                    val updatedWinnerPositions = winners
+                        .mapValues { (competitor, _) -> deltas.getValue(competitor) }
+                        .entries
+                        .sortedByDescending { it.value }
+                        .mapIndexed { index, entry -> entry.key to (Position(index.toUInt()) to distances.getValue(entry.key)) }
+                        .toMap()
+
+                    val updatedLoserPositions = losers.mapValues { (_, pair) -> (pair.first + Position(winners.size.toUInt() - 1U)) to pair.second }
+
+                    positions(updatedWinnerPositions + updatedLoserPositions)
+                }
             }
 }
