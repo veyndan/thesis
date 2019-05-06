@@ -1,11 +1,11 @@
 package com.veyndan.thesis.race
 
-import com.veyndan.thesis.math.Bound
 import com.veyndan.thesis.math.random
+import java.io.Serializable
 
-data class Track(val length: Distance, val factors: List<Factor>) {
+data class Track(val length: Distance, val factors: List<Factor>) : Serializable {
 
-    data class Factor(override val value: Double) : Bound(value, 0.0..1.0)
+    data class Factor(val value: Double) : Serializable
 
     companion object {
 

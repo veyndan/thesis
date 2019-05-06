@@ -5,14 +5,15 @@ package com.veyndan.thesis.race
 import com.veyndan.thesis.math.sample
 import com.veyndan.thesis.utility.mergeWith
 import com.veyndan.thesis.utility.toMap
+import java.io.Serializable
 import kotlin.math.E
 import kotlin.math.pow
 
-data class Race(val track: Track, val competitors: List<Competitor>) {
+data class Race(val track: Track, val competitors: List<Competitor>) : Serializable {
 
     private val steps = competitors
         .map { competitor ->
-            competitor to Step(competitor.variability, competitor.preferences, track.factors)
+            competitor to Step(competitor.variability(), competitor.preferences, track.factors)
         }
         .toMap()
 

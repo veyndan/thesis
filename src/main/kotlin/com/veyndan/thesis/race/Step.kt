@@ -2,18 +2,28 @@ package com.veyndan.thesis.race
 
 import com.veyndan.thesis.math.euclideanDistance
 import com.veyndan.thesis.math.random
+import java.io.Serializable
 import kotlin.math.abs
-import kotlin.math.ln
+import kotlin.math.log10
 
 class Step(
-    private val variability: ClosedFloatingPointRange<Double>,
+    private val variabilityStart: Double,
+    private val variabilityEndInclusive: Double,
     preferences: List<Competitor.Preference>,
     factors: List<Track.Factor>
-) {
+) : Serializable {
 
-    private val compatibility: Double = ln(abs(1 - euclideanDistance(factors, preferences)))
+    constructor(
+        variability: ClosedFloatingPointRange<Double>,
+        preferences: List<Competitor.Preference>,
+        factors: List<Track.Factor>
+    ) : this(variability.start, variability.endInclusive, preferences, factors)
 
-    private fun body(): Double = random.nextDouble(variability.start, variability.endInclusive)
+    fun variability(): ClosedFloatingPointRange<Double> = variabilityStart..variabilityEndInclusive
+
+    private val compatibility: Double = log10(abs(1 - euclideanDistance(factors, preferences)))
+
+    private fun body(): Double = random.nextDouble(variabilityStart, variabilityEndInclusive)
 
     fun stepSize(): Distance = Distance(body() * compatibility)
 }
