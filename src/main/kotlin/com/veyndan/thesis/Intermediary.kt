@@ -1,16 +1,17 @@
 package com.veyndan.thesis
 
-import com.veyndan.thesis.math.nextDoubleRange
 import com.veyndan.thesis.math.random
 import com.veyndan.thesis.race.Competitor
 import com.veyndan.thesis.race.Race
 import com.veyndan.thesis.race.Track
-import com.veyndan.thesis.utility.chunked
+import io.reactivex.rxkotlin.toFlowable
+import io.reactivex.schedulers.Schedulers
+import org.nield.kotlinstatistics.countBy
 import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
-val path = "cache"
+const val path = "cache"
 
 interface Cacheable<T> {
 
@@ -27,70 +28,66 @@ interface Cacheable<T> {
             }
     }
 
-    val item: T
+    fun item(): T
 
     fun read(): T {
         val file = File(pathname)
 
         if (!file.exists()) {
+            println("Caching…")
+            val item = item()
             cache(item)
-        }
-
-        file
-            .inputStream()
-            .use { fileInputStream ->
-                ObjectInputStream(fileInputStream).use { objectInputStream ->
-                    return objectInputStream.readObject() as T
+            return item
+        } else {
+            file
+                .inputStream()
+                .use { fileInputStream ->
+                    ObjectInputStream(fileInputStream).use { objectInputStream ->
+                        @Suppress("UNCHECKED_CAST")
+                        return objectInputStream.readObject() as T
+                    }
                 }
-            }
+        }
     }
-}
-
-private class CompetitorPool(factorCount: Int, size: Int) : Cacheable<List<Competitor>> {
-
-    override val pathname = "$path/competitors_factorCount_${factorCount}_size_$size"
-
-    override val item = List(size, Competitor.generator(factorCount, variability = { random.nextDoubleRange(9.9..10.0) }))
-}
-
-private class TrackPool(factorCount: Int, size: Int) : Cacheable<List<Track>> {
-
-    override val pathname = "$path/track_factorCount_${factorCount}_size_$size"
-
-    override val item = List(size, Track.generator(factorCount))
 }
 
 class RacePool(
-    competitorsSize: Int,
-    tracksSize: Int,
-    factorCount: Int,
-    competitorChunking: () -> Int
+    private val competitorsSize: Int,
+    private val tracksSize: Int,
+    private val factorCount: Int,
+    private val simulations: Int,
+    private val competitorVariability: () -> ClosedFloatingPointRange<Double>,
+    private val competitorChunking: () -> Int
 ) : Cacheable<List<Race>> {
 
-    override val pathname = "$path/racePool_factorCount_${factorCount}_competitorsSize_${competitorsSize}_tracksSize_$tracksSize"
+    override val pathname = "$path/racePool_factorCount_${factorCount}_competitorsSize_${competitorsSize}_tracksSize_${tracksSize}_simulations_$simulations"
 
-    override val item = run {
-        val trackPool = TrackPool(factorCount, tracksSize).read()
-        val competitorPool = CompetitorPool(factorCount, size = competitorsSize).read()
+    override fun item(): List<Race> {
+        val trackPool = Track.generate(factorCount).take(tracksSize)
+        val competitorPool = Competitor.generate(factorCount, competitorVariability).take(competitorsSize).toList()
 
-        listOf(
-            Race(
-                trackPool[0],
-                Race(trackPool[0], competitorPool)
-                    .positions()
-                    .last()
+        return trackPool
+            .flatMap { track ->
+                println(track)
+                generateSequence { competitorPool.shuffled(random) }
+                    .take(simulations)
+                    .toFlowable()
+                    .parallel()
+                    .runOn(Schedulers.computation())
+                    .flatMap { competitorPoolRandomization -> competitorPoolRandomization.chunked(5).toFlowable() }
+                    .map { competitorPoolSample -> Race(track, competitorPoolSample) }
+                    .map { race -> race.positions().last().minBy { it.value.first }!!.key }
+                    .sequential()
+                    .blockingIterable()
+                    .countBy()
                     .entries
-                    .sortedBy { it.value.first }
-                    .map { it.key }
-                    .chunked(competitorChunking)[1]
-            )
-        )
+                    .groupBy(keySelector = { it.value }, valueTransform = { it.key })
+                    .values
+                    .flatten()
+                    .windowed(5, 5)
+                    .map { competitors -> Race(track, competitors) }
+                    .asSequence()
+            }
+            .toList()
     }
-}
-
-fun main() {
-    val factorCount = 100
-
-    println(CompetitorPool(factorCount, size = 500).read())
-    println(TrackPool(factorCount, size = 10).read())
 }

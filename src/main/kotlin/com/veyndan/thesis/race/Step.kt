@@ -24,6 +24,7 @@ class Step(
     private val compatibility: Double = log10(abs(1 - euclideanDistance(factors, preferences)))
 
     private fun body(): Double = random.nextDouble(variabilityStart, variabilityEndInclusive)
+//    private fun body(): Double = random.nextDouble(5.0, 10.0)
 
     fun stepSize(): Distance = Distance(body() * compatibility)
 }

@@ -1,10 +1,13 @@
+@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
+
 package com.veyndan.thesis.race
 
+import com.veyndan.thesis.math.NATURAL_NUMBERS
 import com.veyndan.thesis.math.random
 import java.io.Serializable
 
 data class Competitor(
-    val index: Int,
+    val index: UInt,
     val variabilityStart: Double,
     val variabilityEndInclusive: Double,
     val preferences: List<Preference>
@@ -19,7 +22,9 @@ data class Competitor(
 
     companion object {
 
-        fun generator(factorCount: Int, variability: () -> ClosedFloatingPointRange<Double>): (index: Int) -> Competitor = { index ->
+        fun generate(factorCount: Int, variability: () -> ClosedFloatingPointRange<Double>) = NATURAL_NUMBERS.map(generator(factorCount, variability))
+
+        private fun generator(factorCount: Int, variability: () -> ClosedFloatingPointRange<Double>): (index: UInt) -> Competitor = { index ->
             val variability = variability()
             Competitor(
                 index,

@@ -11,17 +11,18 @@ import org.nield.kotlinstatistics.countBy
 import kotlin.random.nextInt
 
 fun main() {
-    // MODIFICATION OF racePool MUST
     val racePool = RacePool(
-        competitorsSize = 10000,
-        tracksSize = 10,
+        competitorsSize = 100,
+        tracksSize = 1,
         factorCount = 100,
-        competitorChunking = { random.nextInt(6..10) }
+        simulations = 100,
+        competitorVariability = { random.nextDouble(9.0, 9.5)..random.nextDouble(9.9, 10.0) }, // DELETE CACHE WHEN MODIFYING
+        competitorChunking = { random.nextInt(6..10) } // DELETE CACHE WHEN MODIFYING
     ).read()
 
-    val bettorPool = List(10, Bettor.generator(fundsRange = 5.toPounds()..10.toPounds(), dryRunsRange = 0U..20U))
+    val bettorPool = List(10, Bettor.generator(fundsRange = 5.toPounds()..10.toPounds(), dryRunsRange = 20U..50U))
 
-    val race = racePool[0]
+    val race = racePool.first()
 
     val market = Market(bettorPool.take(2))
 //    val market = Market(bettorPool.sample(2..bettorPool.size))

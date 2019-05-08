@@ -4,7 +4,6 @@ package com.veyndan.thesis.utility
 
 import com.veyndan.thesis.plus
 import io.reactivex.Flowable
-import io.reactivex.Maybe
 
 fun <T> Sequence<T>.take(n: UInt): Sequence<T> = take(n.toInt())
 
@@ -92,3 +91,10 @@ fun <K, V0, V1, V2> Map<K, V0>.mergeWith(other: Map<K, V1>, reduce: (V0, V1) -> 
 fun <K, V> List<Map.Entry<K, V>>.toMap() = associate { it.toPair() }
 
 operator fun <T> Flowable<T>.plus(other: Flowable<T>) = concatWith(other)
+
+fun <T> Sequence<T>.onEachIndexed(action: (index: Int, T) -> Unit): Sequence<T> {
+    return mapIndexed { index, item ->
+        action(index, item)
+        item
+    }
+}
