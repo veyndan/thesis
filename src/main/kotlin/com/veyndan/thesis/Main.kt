@@ -12,11 +12,11 @@ import kotlin.random.nextInt
 
 fun main() {
     val racePool = RacePool(
-        competitorsSize = 100,
+        competitorsSize = 5000,
         tracksSize = 1,
         factorCount = 100,
         simulations = 100,
-        competitorVariability = { random.nextDouble(9.0, 9.5)..random.nextDouble(9.9, 10.0) }, // DELETE CACHE WHEN MODIFYING
+        competitorVariability = { random.nextDouble(9.99, 9.995)..random.nextDouble(9.995, 10.0) }, // DELETE CACHE WHEN MODIFYING
         competitorChunking = { random.nextInt(6..10) } // DELETE CACHE WHEN MODIFYING
     ).read()
 

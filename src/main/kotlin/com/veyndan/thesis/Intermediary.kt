@@ -68,7 +68,6 @@ class RacePool(
 
         return trackPool
             .flatMap { track ->
-                println(track)
                 generateSequence { competitorPool.shuffled(random) }
                     .take(simulations)
                     .toFlowable()
