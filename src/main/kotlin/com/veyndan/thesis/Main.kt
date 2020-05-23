@@ -20,11 +20,12 @@ fun main() {
         competitorChunking = { random.nextInt(6..10) } // DELETE CACHE WHEN MODIFYING
     ).read()
 
-    val bettorPool = List(10, Bettor.generator(fundsRange = 5.toPounds()..10.toPounds(), dryRunsRange = 20U..50U))
+//    val bettorPool = List(10, Bettor.generator(fundsRange = 5.toPounds()..10.toPounds(), dryRunsRange = 20U..50U))
+    val bettorPool = List(5) { Bettor(Bettor.Id(it.toULong()), 10.toPounds(), it.toUInt() * 5U) }
 
     val race = racePool.first()
 
-    val market = Market(bettorPool.take(2))
+    val market = Market(bettorPool)
 //    val market = Market(bettorPool.sample(2..bettorPool.size))
 
     println("Track(length=${race.track.length.value})")

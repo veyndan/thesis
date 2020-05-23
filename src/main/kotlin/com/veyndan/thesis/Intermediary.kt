@@ -60,7 +60,8 @@ class RacePool(
     private val competitorChunking: () -> Int
 ) : Cacheable<List<Race>> {
 
-    override val pathname = "$path/racePool_factorCount_${factorCount}_competitorsSize_${competitorsSize}_tracksSize_${tracksSize}_simulations_$simulations"
+//    override val pathname = "$path/racePool_factorCount_${factorCount}_competitorsSize_${competitorsSize}_tracksSize_${tracksSize}_simulations_$simulations"
+    override val pathname = "$path/racePool_factorCount_100_competitorsSize_500_tracksSize_1_simulations_50_constant_variability"
 
     override fun item(): List<Race> {
         val trackPool = Track.generate(factorCount).take(tracksSize)
